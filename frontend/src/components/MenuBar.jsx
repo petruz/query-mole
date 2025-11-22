@@ -44,42 +44,37 @@ const MenuDropdown = ({ label, items }) => {
     );
 };
 
-const MenuBar = ({ onOpenLibrary, onSaveLibrary, onNewConnection, onLoadConnections, onSaveConnections }) => {
-    const menuStructure = [
-        {
-            label: 'File',
-            items: [
-                { label: 'Open Library', onClick: onOpenLibrary },
-                { label: 'Save Library', onClick: onSaveLibrary },
-            ]
-        },
-        {
-            label: 'Connection',
-            items: [
-                { label: 'New Connection', onClick: onNewConnection },
-                { label: 'Load Connections', onClick: onLoadConnections },
-                { label: 'Save Connections', onClick: onSaveConnections },
-            ]
-        },
-        {
-            label: 'Settings',
-            items: [
-                { label: 'Theme', onClick: () => console.log('Theme') },
-            ]
-        },
-        {
-            label: 'Help',
-            items: [
-                { label: 'About', onClick: () => console.log('About') },
-            ]
-        }
-    ];
-
+const MenuBar = ({ onOpenLibrary, onSaveLibrary, onNewConnection, onLoadConnections, onSaveConnections, onAbout }) => {
     return (
         <div className="flex items-center px-2 py-1 bg-gray-900 border-b border-gray-700 select-none">
-            {menuStructure.map((menu, index) => (
-                <MenuDropdown key={index} label={menu.label} items={menu.items} />
-            ))}
+            <MenuDropdown
+                label="File"
+                items={[
+                    { label: 'Open Library', onClick: onOpenLibrary },
+                    { label: 'Save Library', onClick: onSaveLibrary },
+                ]}
+            />
+            <MenuDropdown
+                label="Connection"
+                items={[
+                    { label: 'New Connection', onClick: onNewConnection },
+                    { label: 'Load Connections', onClick: onLoadConnections },
+                    { label: 'Save Connections', onClick: onSaveConnections },
+                ]}
+            />
+            <MenuDropdown
+                label="Options"
+                items={[
+                    { label: 'Theme', onClick: () => alert('Theme settings - Coming soon!') },
+                    { label: 'Settings', onClick: () => alert('Settings - Coming soon!') },
+                ]}
+            />
+            <MenuDropdown
+                label="Help"
+                items={[
+                    { label: 'About', onClick: onAbout },
+                ]}
+            />
         </div>
     );
 };

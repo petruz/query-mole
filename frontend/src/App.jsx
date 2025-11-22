@@ -8,6 +8,7 @@ import MenuBar from './components/MenuBar';
 import ContextMenu from './components/ContextMenu';
 import InputModal from './components/InputModal';
 import ConnectionModal from './components/ConnectionModal';
+import AboutModal from './components/AboutModal';
 import { Play, ChevronDown, ChevronRight, Save } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { DndContext, DragOverlay, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
@@ -39,6 +40,7 @@ function App() {
     const [contextMenu, setContextMenu] = useState(null); // { x, y, node }
     const [modal, setModal] = useState(null); // { type: 'RENAME'|'ADD_FOLDER'|'ADD_QUERY', node?, parentId? }
     const [connectionModal, setConnectionModal] = useState(false);
+    const [aboutModal, setAboutModal] = useState(false);
 
     // Connection State
     const [connections, setConnections] = useState([]);
@@ -493,6 +495,7 @@ function App() {
                     onNewConnection={() => setConnectionModal(true)}
                     onLoadConnections={handleLoadConnectionsFromFile}
                     onSaveConnections={handleSaveConnectionsToFile}
+                    onAbout={() => setAboutModal(true)}
                 />
 
                 <div className="flex flex-1 overflow-hidden">
@@ -654,6 +657,10 @@ function App() {
                         onCancel={() => setConnectionModal(false)}
                         onTest={handleTestConnection}
                     />
+                )}
+
+                {aboutModal && (
+                    <AboutModal onClose={() => setAboutModal(false)} />
                 )}
 
                 <DragOverlay>
