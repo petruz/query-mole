@@ -19,30 +19,29 @@ public class ConnectionController {
     }
 
     @PostMapping("/connect")
-    public ResponseEntity<?> connect(@RequestBody ConnectionRequest request) {
-        try {
-            jdbcExecutorService.switchConnection(request.getUrl(), request.getUsername(), request.getPassword());
-            return ResponseEntity.ok(Map.of("success", true, "message", "Connected to " + request.getUrl()));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("success", false, "error", e.getMessage()));
-        }
+    public void connect(@RequestBody ConnectionRequest request) {
+        jdbcExecutorService.switchConnection(request.getUrl(), request.getUsername(), request.getPassword(),
+                request.getDriverClassName());
     }
-    
+
     @PostMapping("/test")
     public ResponseEntity<?> test(@RequestBody ConnectionRequest request) {
-        // For now, test is same as connect but maybe we revert? 
+        // For now, test is same as connect but maybe we revert?
         // Or we just try to connect and if it works we are good.
         // Ideally we should create a temporary datasource, test it, and close it.
-        // But for simplicity, let's just use the switch logic for now or implement a separate test method later.
+        // But for simplicity, let's just use the switch logic for now or implement a
+        // separate test method later.
         // Let's implement a simple test logic here.
         try {
             org.springframework.jdbc.datasource.DriverManagerDataSource ds = new org.springframework.jdbc.datasource.DriverManagerDataSource();
             ds.setUrl(request.getUrl());
             ds.setUsername(request.getUsername());
             ds.setPassword(request.getPassword());
-            if (request.getUrl().contains("postgresql")) ds.setDriverClassName("org.postgresql.Driver");
-            else if (request.getUrl().contains("h2")) ds.setDriverClassName("org.h2.Driver");
-            
+            if (request.getUrl().contains("postgresql"))
+                ds.setDriverClassName("org.postgresql.Driver");
+            else if (request.getUrl().contains("h2"))
+                ds.setDriverClassName("org.h2.Driver");
+
             try (java.sql.Connection conn = ds.getConnection()) {
                 if (conn.isValid(5)) {
                     return ResponseEntity.ok(Map.of("success", true, "message", "Connection successful"));
