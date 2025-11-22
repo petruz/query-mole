@@ -79,3 +79,36 @@ Query Mole supports any JDBC-compliant database without recompilation:
 3. When creating a new connection, fill in the **Driver Class Name** field (e.g., `com.mysql.cj.jdbc.Driver`).
 4. For PostgreSQL and H2, the driver class name is optional (auto-detected).
 
+## Download & Run (Standalone)
+
+### Option 1: Download Pre-built JAR
+1. Go to [Releases](https://github.com/petruz/query-mole/releases)
+2. Download the latest `query-mole-vX.X.X.jar`
+3. Run:
+   ```bash
+   java -jar query-mole-vX.X.X.jar
+   ```
+4. Open your browser at `http://localhost:8080`
+
+### Option 2: Build from Source
+Run the build script:
+```bash
+./build-standalone.sh
+```
+
+Then execute the JAR:
+```bash
+java -jar backend/build/libs/backend-0.0.1-SNAPSHOT.jar
+```
+
+**Requirements**: Java 17+
+
+## Creating a New Release
+To create a new release with automated JAR build:
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+GitHub Actions will automatically build and publish the JAR to the Releases page.
+
+
