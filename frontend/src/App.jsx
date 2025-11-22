@@ -250,15 +250,49 @@ function App() {
 
     const handleAddFolder = (name) => {
         const newFolder = { id: uuidv4(), name, type: 'FOLDER', children: [] };
-        // Add to root for now, or selected folder if we implemented selection tracking for parents
-        // For simplicity: Add to root
-        setTreeData([...treeData, newFolder]);
+
+        if (modal?.parentNode) {
+            // Add to parent folder
+            const addToParent = (nodes) => {
+                return nodes.map(node => {
+                    if (node.id === modal.parentNode.id) {
+                        return { ...node, children: [...(node.children || []), newFolder] };
+                    }
+                    if (node.children) {
+                        return { ...node, children: addToParent(node.children) };
+                    }
+                    return node;
+                });
+            };
+            setTreeData(addToParent(treeData));
+        } else {
+            // Add to root
+            setTreeData([...treeData, newFolder]);
+        }
         setModal(null);
     };
 
     const handleAddQuery = (name) => {
         const newQuery = { id: uuidv4(), name, type: 'QUERY', query: 'SELECT * FROM ...', children: [] };
-        setTreeData([...treeData, newQuery]);
+
+        if (modal?.parentNode) {
+            // Add to parent folder
+            const addToParent = (nodes) => {
+                return nodes.map(node => {
+                    if (node.id === modal.parentNode.id) {
+                        return { ...node, children: [...(node.children || []), newQuery] };
+                    }
+                    if (node.children) {
+                        return { ...node, children: addToParent(node.children) };
+                    }
+                    return node;
+                });
+            };
+            setTreeData(addToParent(treeData));
+        } else {
+            // Add to root
+            setTreeData([...treeData, newQuery]);
+        }
         setModal(null);
     };
 
@@ -581,8 +615,20 @@ function App() {
                         x={contextMenu.x}
                         y={contextMenu.y}
                         onClose={() => setContextMenu(null)}
-                        onRename={() => setModal({ type: 'RENAME', node: contextMenu.node })}
+                        onRename={() => {
+                            setModal({ type: 'RENAME', node: contextMenu.node });
+                            setContextMenu(null);
+                        }}
                         onDelete={handleDelete}
+                        onAddQuery={() => {
+                            setModal({ type: 'ADD_QUERY', parentNode: contextMenu.node });
+                            setContextMenu(null);
+                        }}
+                        onAddFolder={() => {
+                            setModal({ type: 'ADD_FOLDER', parentNode: contextMenu.node });
+                            setContextMenu(null);
+                        }}
+                        type={contextMenu.node.type}
                     />
                 )}
 

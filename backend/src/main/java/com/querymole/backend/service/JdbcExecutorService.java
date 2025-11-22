@@ -17,22 +17,43 @@ public class JdbcExecutorService {
 
     private JdbcTemplate jdbcTemplate;
 
-    public JdbcExecutorService(JdbcTemplate jdbcTemplate) {
+    private final DriverLoaderService driverLoaderService;
+
+    public JdbcExecutorService(JdbcTemplate jdbcTemplate, DriverLoaderService driverLoaderService) {
         this.jdbcTemplate = jdbcTemplate;
+        this.driverLoaderService = driverLoaderService;
     }
 
-    public void switchConnection(String url, String username, String password) {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(url);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
-        // Basic driver detection or default to Postgres for now, can be enhanced
-        if (url.contains("postgresql")) {
-            dataSource.setDriverClassName("org.postgresql.Driver");
-        } else if (url.contains("h2")) {
-            dataSource.setDriverClassName("org.h2.Driver");
+    public void switchConnection(String url, String username, String password, String driverClassName) {
+        try {
+            javax.sql.DataSource dataSource;
+            if (driverClassName != null && !driverClassName.isEmpty()) {
+                // Use dynamic driver loading
+                java.sql.Driver driver = driverLoaderService.getDriver(driverClassName);
+                org.springframework.jdbc.datasource.SimpleDriverDataSource simpleDataSource = new org.springframework.jdbc.datasource.SimpleDriverDataSource();
+                simpleDataSource.setDriver(driver);
+                simpleDataSource.setUrl(url);
+                simpleDataSource.setUsername(username);
+                simpleDataSource.setPassword(password);
+                dataSource = simpleDataSource;
+            } else {
+                // Fallback to default behavior (DriverManagerDataSource)
+                DriverManagerDataSource defaultDataSource = new DriverManagerDataSource();
+                defaultDataSource.setUrl(url);
+                defaultDataSource.setUsername(username);
+                defaultDataSource.setPassword(password);
+                // Basic driver detection or default to Postgres for now, can be enhanced
+                if (url.contains("postgresql")) {
+                    defaultDataSource.setDriverClassName("org.postgresql.Driver");
+                } else if (url.contains("h2")) {
+                    defaultDataSource.setDriverClassName("org.h2.Driver");
+                }
+                dataSource = defaultDataSource;
+            }
+            this.jdbcTemplate = new JdbcTemplate(dataSource);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to switch connection: " + e.getMessage(), e);
         }
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     public ExecutionResponse executeQuery(String sql) {
