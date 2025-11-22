@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-const ContextMenu = ({ x, y, onClose, onRename, onDelete, type }) => {
+const ContextMenu = ({ x, y, onClose, onRename, onDelete, onAddQuery, onAddFolder, type }) => {
     const menuRef = useRef(null);
 
     useEffect(() => {
@@ -25,6 +25,22 @@ const ContextMenu = ({ x, y, onClose, onRename, onDelete, type }) => {
             >
                 Rename
             </button>
+            {type === 'FOLDER' && (
+                <>
+                    <button
+                        className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                        onClick={onAddQuery}
+                    >
+                        Add Query
+                    </button>
+                    <button
+                        className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                        onClick={onAddFolder}
+                    >
+                        Add Folder
+                    </button>
+                </>
+            )}
             <button
                 className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700 hover:text-red-300 transition-colors"
                 onClick={onDelete}
