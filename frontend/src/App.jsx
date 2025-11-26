@@ -487,7 +487,7 @@ function App() {
 
     return (
         <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-            <div className="flex flex-col h-screen bg-gray-900 text-white overflow-hidden font-sans" onClick={() => setContextMenu(null)}>
+            <div className="flex flex-col h-screen bg-ui-bg-primary text-ui-text-primary overflow-hidden font-sans" onClick={() => setContextMenu(null)}>
                 {/* Menu Bar */}
                 <MenuBar
                     onOpenLibrary={handleOpenLibrary}
@@ -501,13 +501,13 @@ function App() {
                 <div className="flex flex-1 overflow-hidden">
                     {/* Sidebar */}
                     <div
-                        className="flex flex-col border-r border-gray-700 relative flex-shrink-0"
+                        className="flex flex-col border-r border-ui-border relative flex-shrink-0"
                         style={{ width: sidebarWidth }}
                     >
-                        <div className="p-4 border-b border-gray-700 flex justify-between items-center bg-gray-800">
-                            <span className="font-bold text-xl tracking-tight text-blue-400">Query Mole</span>
+                        <div className="p-4 border-b border-tree-border flex justify-between items-center bg-tree-header-bg">
+                            <span className="font-bold text-xl tracking-tight text-tree-header-text">Query Mole</span>
                             <div className="flex gap-1">
-                                <button onClick={() => setModal({ type: 'ADD_FOLDER' })} className="text-gray-400 hover:text-white" title="Add Folder">+</button>
+                                <button onClick={() => setModal({ type: 'ADD_FOLDER' })} className="text-tree-text-muted hover:text-tree-text" title="Add Folder">+</button>
                             </div>
                         </div>
                         <div className="flex-1 overflow-y-auto p-0"> {/* Removed padding to fit selector */}
@@ -524,7 +524,7 @@ function App() {
 
                         {/* Sidebar Resizer Handle */}
                         <div
-                            className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-500 transition-colors z-10"
+                            className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-ui-resize-handle transition-colors z-10"
                             onMouseDown={startResizingSidebar}
                         />
                     </div>
@@ -533,25 +533,25 @@ function App() {
                     <div className="flex-1 flex flex-col min-w-0 h-full">
                         {/* Top: Editor */}
                         <div
-                            className="flex flex-col bg-gray-800 border-b border-gray-700 relative flex-shrink-0"
+                            className="flex flex-col bg-editor-header-bg border-b border-editor-border relative flex-shrink-0"
                             style={{ height: isEditorVisible ? editorHeight : 'auto' }}
                         >
-                            <div className="p-2 border-b border-gray-700 flex justify-between items-center bg-gray-800 select-none">
+                            <div className="p-2 border-b border-editor-border flex justify-between items-center bg-editor-header-bg select-none">
                                 <div className="flex items-center gap-2">
                                     <button
                                         onClick={() => setIsEditorVisible(!isEditorVisible)}
-                                        className="text-gray-400 hover:text-white transition-colors focus:outline-none"
+                                        className="text-editor-header-text hover:text-editor-text transition-colors focus:outline-none"
                                         title={isEditorVisible ? "Collapse Editor" : "Expand Editor"}
                                     >
                                         {isEditorVisible ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                                     </button>
-                                    <span className="text-sm text-gray-400 font-medium truncate">
+                                    <span className="text-sm text-editor-header-text font-medium truncate">
                                         {selectedQuery ? selectedQuery.name : 'Select a query'}
                                     </span>
                                     {selectedQuery && sql !== (selectedQuery.query || '') && (
                                         <button
                                             onClick={handleSaveQuery}
-                                            className="text-gray-400 hover:text-blue-400 transition-colors"
+                                            className="text-editor-header-text hover:text-tree-item-selected-text transition-colors"
                                             title="Save Query Change"
                                         >
                                             <Save size={16} />
@@ -561,7 +561,7 @@ function App() {
                                 <button
                                     onClick={handleExecute}
                                     disabled={loading || !sql}
-                                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-600 text-white px-4 py-1.5 rounded text-sm font-medium transition-colors"
+                                    className="flex items-center gap-2 bg-editor-button-bg hover:bg-editor-button-hover disabled:bg-editor-button-disabled text-editor-button-text px-4 py-1.5 rounded text-sm font-medium transition-colors"
                                 >
                                     <Play size={16} />
                                     Execute
@@ -575,7 +575,7 @@ function App() {
                                     </div>
                                     {/* Editor Resizer Handle */}
                                     <div
-                                        className="absolute bottom-0 left-0 w-full h-1 cursor-row-resize hover:bg-blue-500 transition-colors z-10"
+                                        className="absolute bottom-0 left-0 w-full h-1 cursor-row-resize hover:bg-ui-resize-handle transition-colors z-10"
                                         onMouseDown={startResizingEditor}
                                     />
                                 </>
@@ -583,9 +583,9 @@ function App() {
                         </div>
 
                         {/* Middle: Results */}
-                        <div className="flex-1 overflow-hidden bg-gray-900 flex flex-col min-h-0">
+                        <div className="flex-1 overflow-hidden bg-grid-bg flex flex-col min-h-0">
                             {error && (
-                                <div className="p-4 bg-red-900/50 text-red-200 border-b border-red-800 flex-shrink-0">
+                                <div className="p-4 bg-ui-error-bg text-ui-error-text border-b border-ui-error-border flex-shrink-0">
                                     Error: {error}
                                 </div>
                             )}
@@ -596,12 +596,12 @@ function App() {
 
                         {/* Bottom: Footer */}
                         <div
-                            className="relative bg-gray-800 border-t border-gray-700 flex-shrink-0"
+                            className="relative bg-ui-bg-secondary border-t border-ui-border flex-shrink-0"
                             style={{ height: footerHeight }}
                         >
                             {/* Footer Resizer Handle */}
                             <div
-                                className="absolute top-0 left-0 w-full h-1 cursor-row-resize hover:bg-blue-500 transition-colors z-10"
+                                className="absolute top-0 left-0 w-full h-1 cursor-row-resize hover:bg-ui-resize-handle transition-colors z-10"
                                 onMouseDown={startResizingFooter}
                             />
                             <StatusFooter
@@ -665,13 +665,13 @@ function App() {
 
                 <DragOverlay>
                     {activeDragNode ? (
-                        <div className="px-2 py-1 bg-gray-700 rounded shadow text-white opacity-80">
+                        <div className="px-2 py-1 bg-tree-item-hover rounded shadow text-tree-text opacity-80">
                             {activeDragNode.name}
                         </div>
                     ) : null}
                 </DragOverlay>
             </div>
-        </DndContext>
+        </DndContext >
     );
 }
 

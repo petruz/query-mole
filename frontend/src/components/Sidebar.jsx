@@ -50,15 +50,15 @@ const TreeNode = ({ node, onSelect, selectedId, onContextMenu, level = 0 }) => {
                 {...attributes}
                 className={clsx(
                     "flex items-center gap-2 px-2 py-1.5 cursor-pointer rounded text-sm select-none transition-colors border border-transparent",
-                    isSelected && "bg-blue-900/50 text-blue-200 hover:bg-blue-900/60",
-                    !isSelected && "text-gray-300 hover:bg-gray-800",
-                    isOver && isFolder && "bg-blue-800/30 border-blue-500/50"
+                    isSelected && "bg-tree-item-selected-bg text-tree-item-selected-text hover:opacity-90",
+                    !isSelected && "text-tree-text hover:bg-tree-item-hover",
+                    isOver && isFolder && "bg-tree-item-selected-bg/50 border-tree-border"
                 )}
                 style={{ paddingLeft: `${level * 12 + 8}px` }}
                 onClick={handleClick}
                 onContextMenu={handleContextMenu}
             >
-                <span className="text-gray-500" onClick={(e) => { e.stopPropagation(); setIsOpen(!isOpen); }}>
+                <span className="text-tree-text-muted" onClick={(e) => { e.stopPropagation(); setIsOpen(!isOpen); }}>
                     {isFolder ? (
                         isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />
                     ) : (
@@ -67,9 +67,9 @@ const TreeNode = ({ node, onSelect, selectedId, onContextMenu, level = 0 }) => {
                 </span>
 
                 {isFolder ? (
-                    <Folder size={14} className="text-yellow-500" />
+                    <Folder size={14} className="text-tree-icon-folder" />
                 ) : (
-                    <FileText size={14} className="text-blue-400" />
+                    <FileText size={14} className="text-tree-icon-file" />
                 )}
 
                 <span className="truncate">{node.name}</span>
@@ -99,9 +99,9 @@ const Sidebar = ({ nodes, onSelect, selectedId, onContextMenu, connections, acti
     return (
         <div className="flex flex-col h-full">
             {/* Connection Selector */}
-            <div className="p-2 border-b border-gray-700 bg-gray-800/50">
+            <div className="p-2 border-b border-tree-border bg-tree-bg-secondary">
                 <select
-                    className="w-full bg-gray-900 border border-gray-700 text-white text-sm rounded px-2 py-1 focus:outline-none focus:border-blue-500"
+                    className="w-full bg-tree-bg border border-tree-border text-tree-text text-sm rounded px-2 py-1 focus:outline-none focus:border-tree-item-selected-text"
                     value={activeConnectionId || ''}
                     onChange={(e) => onConnectionChange(e.target.value)}
                 >
