@@ -448,58 +448,139 @@ function App() {
         const { active, over } = event;
         setActiveDragNode(null);
 
-        if (!over) return;
+        if (!over) {
+            return;
+        }
 
         const activeId = active.id;
         const overId = over.id;
 
-        if (activeId === overId) return;
+        if (activeId === overId) {
+            return;
+        }
 
-        // Simple logic: If dropped on a folder, move it inside.
-        // If dropped on an item, maybe reorder? (Reordering is harder without Sortable)
-        // Let's implement "Move to Folder" first.
-
-        const moveNode = (nodes, nodeId, targetFolderId) => {
-            let nodeToMove = null;
-
-            // 1. Remove node from old location
-            const removeNode = (list) => {
-                return list.filter(item => {
-                    if (item.id === nodeId) {
-                        nodeToMove = item;
-                        return false;
+        setTreeData((items) => {
+            // Helper to find parent of a node
+            const findParent = (nodes, id, parent = null) => {
+                for (const node of nodes) {
+                    if (node.children && node.children.some(child => child.id === id)) {
+                        return node;
                     }
-                    if (item.children) {
-                        item.children = removeNode(item.children);
+                    if (node.children) {
+                        const found = findParent(node.children, id, node);
+                        if (found) return found;
                     }
-                    return true;
-                });
+                }
+                return null;
             };
 
-            let newTree = removeNode([...nodes]);
+            const activeParent = findParent(items, activeId);
+            const overParent = findParent(items, overId);
 
-            if (!nodeToMove) return nodes; // Failed to find node
+            // Check if both are at root level
+            const isActiveRoot = items.some(n => n.id === activeId);
+            const isOverRoot = items.some(n => n.id === overId);
 
-            // 2. Add node to new location
-            const addNode = (list) => {
-                return list.map(item => {
-                    if (item.id === targetFolderId && item.type === 'FOLDER') {
-                        return { ...item, children: [...(item.children || []), nodeToMove] };
-                    }
-                    if (item.children) {
-                        return { ...item, children: addNode(item.children) };
-                    }
-                    return item;
-                });
-            };
+            // Case 1: Reordering within the same container
+            // Both at root OR both have the same parent
+            const sameParent = (activeParent === null && overParent === null) ||
+                (activeParent?.id === overParent?.id);
 
-            // If target is root (we can define a special ID or just check if overId is null/special)
-            // For now, only drop ON folders.
+            if (sameParent) {
+                const result = reorderNodes(items, activeId, overId);
+                return result;
+            }
 
-            return addNode(newTree);
+            // Case 2: Moving to a different folder
+            // Check if over is a folder - if so, move inside it
+            const overNode = findNodeById(items, overId);
+
+            if (overNode && overNode.type === 'FOLDER') {
+                return moveNode(items, activeId, overId);
+            }
+
+            // Otherwise, no action
+            return items;
+        });
+    };
+
+    // Helper to find a node by ID
+    const findNodeById = (nodes, id) => {
+        for (const node of nodes) {
+            if (node.id === id) return node;
+            if (node.children) {
+                const found = findNodeById(node.children, id);
+                if (found) return found;
+            }
+        }
+        return null;
+    };
+
+    // Helper to reorder nodes recursively
+    const reorderNodes = (nodes, activeId, overId) => {
+        const activeNodeIndex = nodes.findIndex(n => n.id === activeId);
+        const overNodeIndex = nodes.findIndex(n => n.id === overId);
+
+        if (activeNodeIndex !== -1 && overNodeIndex !== -1) {
+            // Found both at this level, reorder them
+            return arrayMove(nodes, activeNodeIndex, overNodeIndex);
+        }
+
+        // Recursively search in children
+        return nodes.map(node => {
+            if (node.children && node.children.length > 0) {
+                return {
+                    ...node,
+                    children: reorderNodes(node.children, activeId, overId)
+                };
+            }
+            return node;
+        });
+    };
+
+    // Helper from dnd-kit
+    const arrayMove = (array, from, to) => {
+        const newArray = array.slice();
+        const [removed] = newArray.splice(from, 1);
+        newArray.splice(to, 0, removed);
+        return newArray;
+    };
+
+    const moveNode = (nodes, nodeId, targetFolderId) => {
+        let nodeToMove = null;
+
+        // 1. Remove node from old location
+        const removeNode = (list) => {
+            return list.filter(item => {
+                if (item.id === nodeId) {
+                    nodeToMove = item;
+                    return false;
+                }
+                if (item.children) {
+                    item.children = removeNode(item.children);
+                }
+                return true;
+            });
         };
 
-        setTreeData(prev => moveNode(prev, activeId, overId));
+        let newTree = removeNode([...nodes]);
+
+        if (!nodeToMove) return nodes; // Failed to find node
+
+        // 2. Add node to new location
+        const addNode = (list) => {
+            return list.map(item => {
+                if (item.id === targetFolderId && item.type === 'FOLDER') {
+                    return { ...item, children: [...(item.children || []), nodeToMove] };
+                }
+                if (item.children) {
+                    return { ...item, children: addNode(item.children) };
+                }
+                return item;
+            });
+        };
+
+        return addNode(newTree);
     };
 
     const handleDeleteConnection = (id) => {
