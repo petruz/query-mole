@@ -494,6 +494,21 @@ function App() {
         setTreeData(prev => moveNode(prev, activeId, overId));
     };
 
+    const handleDeleteConnection = (id) => {
+        if (window.confirm('Are you sure you want to delete this connection?')) {
+            const updatedConnections = connections.filter(c => c.id !== id);
+            setConnections(updatedConnections);
+            localStorage.setItem('qm_connections', JSON.stringify(updatedConnections));
+
+            if (activeConnectionId === id) {
+                setActiveConnectionId(null);
+                localStorage.removeItem('qm_active_connection_id');
+                setTreeData([]);
+                setResults(null);
+            }
+        }
+    };
+
     return (
         <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
             <div className="flex flex-col h-screen bg-ui-bg-primary text-ui-text-primary overflow-hidden font-sans" onClick={() => setContextMenu(null)}>
@@ -531,6 +546,7 @@ function App() {
                                 connections={connections}
                                 activeConnectionId={activeConnectionId}
                                 onConnectionChange={setActiveConnectionId}
+                                onDeleteConnection={handleDeleteConnection}
                             />
                         </div>
 
