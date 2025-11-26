@@ -79,7 +79,15 @@ function App() {
         if (savedTree) {
             setTreeData(JSON.parse(savedTree));
         } else {
-            fetchTree();
+            // Default initial state: Empty "Queries" folder
+            setTreeData([
+                {
+                    id: uuidv4(),
+                    name: 'Queries',
+                    type: 'FOLDER',
+                    children: []
+                }
+            ]);
         }
     }, []);
 
@@ -99,15 +107,15 @@ function App() {
                 localStorage.setItem('qm_active_connection_id', activeConnectionId);
             }
         }
-    }, [activeConnectionId]); // Be careful with dependency on connections if it changes often
+    }, [activeConnectionId, connections]);
 
-    const connectToDatabase = async (conn) => {
+    const connectToDatabase = async (connection) => {
         try {
-            await axios.post('/api/connection/connect', conn);
-            console.log("Connected to", conn.name);
+            await axios.post('/api/connection/connect', connection);
+            // alert(`Connected to ${connection.name}`);
         } catch (err) {
-            console.error("Failed to connect", err);
-            alert(`Failed to connect to ${conn.name}: ${err.response?.data?.error || err.message}`);
+            console.error('Connection failed:', err);
+            alert(`Failed to connect to ${connection.name}: ${err.response?.data?.error || err.message}`);
         }
     };
 
