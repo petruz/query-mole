@@ -52,6 +52,11 @@ function App() {
 
     const sidebarRef = useRef(null);
     const editorRef = useRef(null);
+    const resultsTableRef = useRef(null);
+
+    const handleExportCSV = () => resultsTableRef.current?.exportToCSV();
+    const handleExportExcel = () => resultsTableRef.current?.exportToExcel();
+    const handleExportPDF = () => resultsTableRef.current?.exportToPDF();
     const isResizingSidebar = useRef(false);
     const isResizingEditor = useRef(false);
     const isResizingFooter = useRef(false);
@@ -597,7 +602,7 @@ function App() {
                                 </div>
                             )}
                             <div className="flex-1 overflow-auto">
-                                <ResultsTable results={results} loading={loading} />
+                                <ResultsTable ref={resultsTableRef} results={results} loading={loading} />
                             </div>
                         </div>
 
@@ -614,6 +619,10 @@ function App() {
                             <StatusFooter
                                 executionTime={results?.executionTimeMs}
                                 rowCount={results?.rows?.length}
+                                onExportCSV={handleExportCSV}
+                                onExportExcel={handleExportExcel}
+                                onExportPDF={handleExportPDF}
+                                hasResults={!!results && results.rows && results.rows.length > 0}
                             />
                         </div>
                     </div>

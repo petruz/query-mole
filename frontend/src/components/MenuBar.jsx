@@ -21,14 +21,14 @@ const MenuDropdown = ({ label, items, hasSubmenu }) => {
     return (
         <div className="relative" ref={dropdownRef}>
             <button
-                className={`px-3 py-1 text-sm text-gray-300 hover:bg-gray-700 rounded flex items-center gap-1 transition-colors ${isOpen ? 'bg-gray-700 text-white' : ''}`}
+                className={`px-3 py-1 text-sm text-[var(--menu-text)] hover:bg-[var(--menu-hover-bg)] hover:text-[var(--menu-hover-text)] rounded flex items-center gap-1 transition-colors ${isOpen ? 'bg-[var(--menu-hover-bg)] text-[var(--menu-hover-text)]' : ''}`}
                 onClick={() => setIsOpen(!isOpen)}
             >
                 {label}
             </button>
 
             {isOpen && (
-                <div className="absolute top-full left-0 mt-1 w-48 bg-gray-800 border border-gray-700 rounded shadow-lg z-50 py-1">
+                <div className="absolute top-full left-0 mt-1 w-48 bg-[var(--menu-dropdown-bg)] border border-[var(--menu-dropdown-border)] rounded shadow-lg z-50 py-1">
                     {items.map((item, index) => (
                         item.submenu ? (
                             <div
@@ -38,18 +38,18 @@ const MenuDropdown = ({ label, items, hasSubmenu }) => {
                                 onMouseLeave={() => setOpenSubmenu(null)}
                             >
                                 <button
-                                    className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors flex items-center justify-between"
+                                    className="w-full text-left px-4 py-2 text-sm text-[var(--menu-text)] hover:bg-[var(--menu-hover-bg)] hover:text-[var(--menu-hover-text)] transition-colors flex items-center justify-between"
                                 >
                                     {item.label}
                                     <span className="text-xs">▶</span>
                                 </button>
 
                                 {openSubmenu === index && (
-                                    <div className="absolute left-full top-0 ml-1 w-40 bg-gray-800 border border-gray-700 rounded shadow-lg py-1">
+                                    <div className="absolute left-full top-0 ml-1 w-40 bg-[var(--menu-dropdown-bg)] border border-[var(--menu-dropdown-border)] rounded shadow-lg py-1">
                                         {item.submenu.map((subItem, subIndex) => (
                                             <button
                                                 key={subIndex}
-                                                className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors flex items-center justify-between"
+                                                className="w-full text-left px-4 py-2 text-sm text-[var(--menu-text)] hover:bg-[var(--menu-hover-bg)] hover:text-[var(--menu-hover-text)] transition-colors flex items-center justify-between"
                                                 onClick={() => {
                                                     subItem.onClick?.();
                                                     setIsOpen(false);
@@ -66,7 +66,7 @@ const MenuDropdown = ({ label, items, hasSubmenu }) => {
                         ) : (
                             <button
                                 key={index}
-                                className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                                className="w-full text-left px-4 py-2 text-sm text-[var(--menu-text)] hover:bg-[var(--menu-hover-bg)] hover:text-[var(--menu-hover-text)] transition-colors"
                                 onClick={() => {
                                     item.onClick?.();
                                     setIsOpen(false);
@@ -84,7 +84,7 @@ const MenuDropdown = ({ label, items, hasSubmenu }) => {
 
 const MenuBar = ({ onOpenLibrary, onSaveLibrary, onNewConnection, onLoadConnections, onSaveConnections, onAbout, currentTheme, availableThemes, onThemeChange }) => {
     return (
-        <div className="flex items-center px-2 py-1 bg-gray-900 border-b border-gray-700 select-none">
+        <div className="flex items-center px-2 py-1 bg-[var(--menu-bg)] border-b border-[var(--menu-border)] select-none">
             <MenuDropdown
                 label="File"
                 items={[

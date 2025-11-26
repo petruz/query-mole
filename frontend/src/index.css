@@ -107,6 +107,36 @@
   /* ===== Loading/Spinner Colors ===== */
   --ui-spinner: #3b82f6;
   /* Loading spinner color */
+
+  /* ===== Menu Bar Colors ===== */
+  --menu-bg: #1f2937;
+  /* Menu bar background */
+  --menu-text: #d1d5db;
+  /* Menu text color */
+  --menu-border: #374151;
+  /* Menu border color */
+  --menu-hover-bg: #374151;
+  /* Menu item hover background */
+  --menu-hover-text: #ffffff;
+  /* Menu item hover text */
+  --menu-dropdown-bg: #1f2937;
+  /* Dropdown background */
+  --menu-dropdown-border: #374151;
+  /* Dropdown border */
+
+  /* ===== Status Footer Colors ===== */
+  --footer-bg: #1f2937;
+  /* Footer background */
+  --footer-text: #9ca3af;
+  /* Footer text color */
+  --footer-border: #374151;
+  /* Footer border */
+  --footer-item-bg: #374151;
+  /* Footer item/button background */
+  --footer-item-text: #d1d5db;
+  /* Footer item/button text */
+  --footer-item-hover: #4b5563;
+  /* Footer item hover background */
 }
 
 /* ===================================
@@ -211,6 +241,36 @@
   /* Blue handle */
   --ui-spinner: #3b82f6;
   /* Blue spinner */
+
+  /* ===== Menu Bar Colors ===== */
+  --menu-bg: #ffffff;
+  /* White background */
+  --menu-text: #374151;
+  /* Dark gray text */
+  --menu-border: #e5e7eb;
+  /* Light border */
+  --menu-hover-bg: #f3f4f6;
+  /* Light gray hover */
+  --menu-hover-text: #111827;
+  /* Dark text hover */
+  --menu-dropdown-bg: #ffffff;
+  /* White dropdown */
+  --menu-dropdown-border: #e5e7eb;
+  /* Light border */
+
+  /* ===== Status Footer Colors ===== */
+  --footer-bg: #f3f4f6;
+  /* Light gray background */
+  --footer-text: #6b7280;
+  /* Gray text */
+  --footer-border: #e5e7eb;
+  /* Light border */
+  --footer-item-bg: #ffffff;
+  /* White button bg */
+  --footer-item-text: #374151;
+  /* Dark gray button text */
+  --footer-item-hover: #f9fafb;
+  /* Very light hover */
 }
 
 /* Optional: Add theme variants by overriding variables */

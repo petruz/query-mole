@@ -63,6 +63,25 @@ export default {
                     'resize-handle': 'var(--ui-resize-handle)',
                     spinner: 'var(--ui-spinner)',
                 },
+                // Menu Bar colors
+                menu: {
+                    bg: 'var(--menu-bg)',
+                    text: 'var(--menu-text)',
+                    border: 'var(--menu-border)',
+                    'hover-bg': 'var(--menu-hover-bg)',
+                    'hover-text': 'var(--menu-hover-text)',
+                    'dropdown-bg': 'var(--menu-dropdown-bg)',
+                    'dropdown-border': 'var(--menu-dropdown-border)',
+                },
+                // Status Footer colors
+                footer: {
+                    bg: 'var(--footer-bg)',
+                    text: 'var(--footer-text)',
+                    border: 'var(--footer-border)',
+                    'item-bg': 'var(--footer-item-bg)',
+                    'item-text': 'var(--footer-item-text)',
+                    'item-hover': 'var(--footer-item-hover)',
+                },
             },
         },
     },
