@@ -12,8 +12,12 @@ import AboutModal from './components/AboutModal';
 import { Play, ChevronDown, ChevronRight, Save } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { DndContext, DragOverlay, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
+import { useTheme } from './context/ThemeContext';
 
 function App() {
+    // Theme
+    const { theme, availableThemes, switchTheme } = useTheme();
+
     const [treeData, setTreeData] = useState([]);
     const [selectedQuery, setSelectedQuery] = useState(null);
     const [sql, setSql] = useState('');
@@ -496,6 +500,9 @@ function App() {
                     onLoadConnections={handleLoadConnectionsFromFile}
                     onSaveConnections={handleSaveConnectionsToFile}
                     onAbout={() => setAboutModal(true)}
+                    currentTheme={theme}
+                    availableThemes={availableThemes}
+                    onThemeChange={switchTheme}
                 />
 
                 <div className="flex flex-1 overflow-hidden">

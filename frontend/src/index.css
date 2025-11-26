@@ -109,6 +109,110 @@
   /* Loading spinner color */
 }
 
+/* ===================================
+   Light Theme
+   ===================================
+   Activate by adding data-theme="light" to the root element
+*/
+
+[data-theme="light"] {
+  /* ===== Tree/Sidebar Colors ===== */
+  --tree-bg: #f3f4f6;
+  /* Light gray background */
+  --tree-bg-secondary: rgba(229, 231, 235, 0.8);
+  /* Lighter secondary */
+  --tree-text: #1f2937;
+  /* Dark text */
+  --tree-text-muted: #6b7280;
+  /* Muted gray text */
+  --tree-item-hover: #e5e7eb;
+  /* Light hover */
+  --tree-item-selected-bg: #dbeafe;
+  /* Light blue selection */
+  --tree-item-selected-text: #1e40af;
+  /* Dark blue text */
+  --tree-border: #d1d5db;
+  /* Light borders */
+  --tree-icon-folder: #f59e0b;
+  /* Amber folder */
+  --tree-icon-file: #3b82f6;
+  /* Blue file */
+  --tree-header-bg: #e5e7eb;
+  /* Light header */
+  --tree-header-text: #1e40af;
+  /* Dark blue title */
+
+  /* ===== Query Editor Colors ===== */
+  --editor-bg: #ffffff;
+  /* White background */
+  --editor-text: #1f2937;
+  /* Dark text */
+  --editor-border: #d1d5db;
+  /* Light borders */
+  --editor-header-bg: #f3f4f6;
+  /* Light gray header */
+  --editor-header-text: #6b7280;
+  /* Gray text */
+  --editor-button-bg: #2563eb;
+  /* Blue button */
+  --editor-button-hover: #1d4ed8;
+  /* Darker blue hover */
+  --editor-button-text: #ffffff;
+  /* White text */
+  --editor-button-disabled: #d1d5db;
+  /* Gray disabled */
+
+  /* ===== Results Grid Colors ===== */
+  --grid-bg: #ffffff;
+  /* White grid */
+  --grid-header-bg: #f3f4f6;
+  /* Light gray header */
+  --grid-header-text: #4b5563;
+  /* Dark gray text */
+  --grid-header-hover: #e5e7eb;
+  /* Lighter hover */
+  --grid-text: #1f2937;
+  /* Dark text */
+  --grid-text-null: #9ca3af;
+  /* Gray null values */
+  --grid-border: #d1d5db;
+  /* Light borders */
+  --grid-row-border: #e5e7eb;
+  /* Row separators */
+  --grid-row-hover: rgba(229, 231, 235, 0.6);
+  /* Light hover */
+  --grid-pagination-bg: #f3f4f6;
+  /* Light pagination */
+  --grid-pagination-text: #6b7280;
+  /* Gray text */
+  --grid-pagination-button-hover: #e5e7eb;
+  /* Light hover */
+
+  /* ===== General UI Colors ===== */
+  --ui-bg-primary: #f9fafb;
+  /* Very light background */
+  --ui-bg-secondary: #f3f4f6;
+  /* Light gray background */
+  --ui-border: #d1d5db;
+  /* Light borders */
+  --ui-text-primary: #111827;
+  /* Dark text */
+  --ui-text-secondary: #374151;
+  /* Dark gray text */
+  --ui-text-muted: #6b7280;
+  /* Muted text */
+  --ui-error-bg: rgba(254, 202, 202, 0.5);
+  /* Light red background */
+  --ui-error-text: #991b1b;
+  /* Dark red text */
+  --ui-error-border: #fca5a5;
+  /* Light red border */
+  --ui-resize-handle: #3b82f6;
+  /* Blue handle */
+  --ui-spinner: #3b82f6;
+  /* Blue spinner */
+}
+
 /* Optional: Add theme variants by overriding variables */
 /* Example - Light Theme (uncomment to activate)
 [data-theme="light"] {
