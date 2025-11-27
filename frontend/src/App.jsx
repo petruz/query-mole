@@ -8,11 +8,16 @@ import MenuBar from './components/MenuBar';
 import ContextMenu from './components/ContextMenu';
 import InputModal from './components/InputModal';
 import ConnectionModal from './components/ConnectionModal';
+import AboutModal from './components/AboutModal';
 import { Play, ChevronDown, ChevronRight, Save } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { DndContext, DragOverlay, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
+import { useTheme } from './context/ThemeContext';
 
 function App() {
+    // Theme
+    const { theme, availableThemes, switchTheme } = useTheme();
+
     const [treeData, setTreeData] = useState([]);
     const [selectedQuery, setSelectedQuery] = useState(null);
     const [sql, setSql] = useState('');
@@ -39,6 +44,7 @@ function App() {
     const [contextMenu, setContextMenu] = useState(null); // { x, y, node }
     const [modal, setModal] = useState(null); // { type: 'RENAME'|'ADD_FOLDER'|'ADD_QUERY', node?, parentId? }
     const [connectionModal, setConnectionModal] = useState(false);
+    const [aboutModal, setAboutModal] = useState(false);
 
     // Connection State
     const [connections, setConnections] = useState([]);
@@ -46,6 +52,11 @@ function App() {
 
     const sidebarRef = useRef(null);
     const editorRef = useRef(null);
+    const resultsTableRef = useRef(null);
+
+    const handleExportCSV = () => resultsTableRef.current?.exportToCSV();
+    const handleExportExcel = () => resultsTableRef.current?.exportToExcel();
+    const handleExportPDF = () => resultsTableRef.current?.exportToPDF();
     const isResizingSidebar = useRef(false);
     const isResizingEditor = useRef(false);
     const isResizingFooter = useRef(false);
@@ -68,7 +79,15 @@ function App() {
         if (savedTree) {
             setTreeData(JSON.parse(savedTree));
         } else {
-            fetchTree();
+            // Default initial state: Empty "Queries" folder
+            setTreeData([
+                {
+                    id: uuidv4(),
+                    name: 'Queries',
+                    type: 'FOLDER',
+                    children: []
+                }
+            ]);
         }
     }, []);
 
@@ -88,15 +107,15 @@ function App() {
                 localStorage.setItem('qm_active_connection_id', activeConnectionId);
             }
         }
-    }, [activeConnectionId]); // Be careful with dependency on connections if it changes often
+    }, [activeConnectionId, connections]);
 
-    const connectToDatabase = async (conn) => {
+    const connectToDatabase = async (connection) => {
         try {
-            await axios.post('/api/connection/connect', conn);
-            console.log("Connected to", conn.name);
+            await axios.post('/api/connection/connect', connection);
+            // alert(`Connected to ${connection.name}`);
         } catch (err) {
-            console.error("Failed to connect", err);
-            alert(`Failed to connect to ${conn.name}: ${err.response?.data?.error || err.message}`);
+            console.error('Connection failed:', err);
+            alert(`Failed to connect to ${connection.name}: ${err.response?.data?.error || err.message}`);
         }
     };
 
@@ -429,63 +448,159 @@ function App() {
         const { active, over } = event;
         setActiveDragNode(null);
 
-        if (!over) return;
+        if (!over) {
+            return;
+        }
 
         const activeId = active.id;
         const overId = over.id;
 
-        if (activeId === overId) return;
+        if (activeId === overId) {
+            return;
+        }
 
-        // Simple logic: If dropped on a folder, move it inside.
-        // If dropped on an item, maybe reorder? (Reordering is harder without Sortable)
-        // Let's implement "Move to Folder" first.
-
-        const moveNode = (nodes, nodeId, targetFolderId) => {
-            let nodeToMove = null;
-
-            // 1. Remove node from old location
-            const removeNode = (list) => {
-                return list.filter(item => {
-                    if (item.id === nodeId) {
-                        nodeToMove = item;
-                        return false;
+        setTreeData((items) => {
+            // Helper to find parent of a node
+            const findParent = (nodes, id, parent = null) => {
+                for (const node of nodes) {
+                    if (node.children && node.children.some(child => child.id === id)) {
+                        return node;
                     }
-                    if (item.children) {
-                        item.children = removeNode(item.children);
+                    if (node.children) {
+                        const found = findParent(node.children, id, node);
+                        if (found) return found;
                     }
-                    return true;
-                });
+                }
+                return null;
             };
 
-            let newTree = removeNode([...nodes]);
+            const activeParent = findParent(items, activeId);
+            const overParent = findParent(items, overId);
 
-            if (!nodeToMove) return nodes; // Failed to find node
+            // Check if both are at root level
+            const isActiveRoot = items.some(n => n.id === activeId);
+            const isOverRoot = items.some(n => n.id === overId);
 
-            // 2. Add node to new location
-            const addNode = (list) => {
-                return list.map(item => {
-                    if (item.id === targetFolderId && item.type === 'FOLDER') {
-                        return { ...item, children: [...(item.children || []), nodeToMove] };
-                    }
-                    if (item.children) {
-                        return { ...item, children: addNode(item.children) };
-                    }
-                    return item;
-                });
-            };
+            // Case 1: Reordering within the same container
+            // Both at root OR both have the same parent
+            const sameParent = (activeParent === null && overParent === null) ||
+                (activeParent?.id === overParent?.id);
 
-            // If target is root (we can define a special ID or just check if overId is null/special)
-            // For now, only drop ON folders.
+            if (sameParent) {
+                const result = reorderNodes(items, activeId, overId);
+                return result;
+            }
 
-            return addNode(newTree);
+            // Case 2: Moving to a different folder
+            // Check if over is a folder - if so, move inside it
+            const overNode = findNodeById(items, overId);
+
+            if (overNode && overNode.type === 'FOLDER') {
+                return moveNode(items, activeId, overId);
+            }
+
+            // Otherwise, no action
+            return items;
+        });
+    };
+
+    // Helper to find a node by ID
+    const findNodeById = (nodes, id) => {
+        for (const node of nodes) {
+            if (node.id === id) return node;
+            if (node.children) {
+                const found = findNodeById(node.children, id);
+                if (found) return found;
+            }
+        }
+        return null;
+    };
+
+    // Helper to reorder nodes recursively
+    const reorderNodes = (nodes, activeId, overId) => {
+        const activeNodeIndex = nodes.findIndex(n => n.id === activeId);
+        const overNodeIndex = nodes.findIndex(n => n.id === overId);
+
+        if (activeNodeIndex !== -1 && overNodeIndex !== -1) {
+            // Found both at this level, reorder them
+            return arrayMove(nodes, activeNodeIndex, overNodeIndex);
+        }
+
+        // Recursively search in children
+        return nodes.map(node => {
+            if (node.children && node.children.length > 0) {
+                return {
+                    ...node,
+                    children: reorderNodes(node.children, activeId, overId)
+                };
+            }
+            return node;
+        });
+    };
+
+    // Helper from dnd-kit
+    const arrayMove = (array, from, to) => {
+        const newArray = array.slice();
+        const [removed] = newArray.splice(from, 1);
+        newArray.splice(to, 0, removed);
+        return newArray;
+    };
+
+    const moveNode = (nodes, nodeId, targetFolderId) => {
+        let nodeToMove = null;
+
+        // 1. Remove node from old location
+        const removeNode = (list) => {
+            return list.filter(item => {
+                if (item.id === nodeId) {
+                    nodeToMove = item;
+                    return false;
+                }
+                if (item.children) {
+                    item.children = removeNode(item.children);
+                }
+                return true;
+            });
         };
 
-        setTreeData(prev => moveNode(prev, activeId, overId));
+        let newTree = removeNode([...nodes]);
+
+        if (!nodeToMove) return nodes; // Failed to find node
+
+        // 2. Add node to new location
+        const addNode = (list) => {
+            return list.map(item => {
+                if (item.id === targetFolderId && item.type === 'FOLDER') {
+                    return { ...item, children: [...(item.children || []), nodeToMove] };
+                }
+                if (item.children) {
+                    return { ...item, children: addNode(item.children) };
+                }
+                return item;
+            });
+        };
+
+        return addNode(newTree);
+    };
+
+    const handleDeleteConnection = (id) => {
+        if (window.confirm('Are you sure you want to delete this connection?')) {
+            const updatedConnections = connections.filter(c => c.id !== id);
+            setConnections(updatedConnections);
+            localStorage.setItem('qm_connections', JSON.stringify(updatedConnections));
+
+            if (activeConnectionId === id) {
+                setActiveConnectionId(null);
+                localStorage.removeItem('qm_active_connection_id');
+                setTreeData([]);
+                setResults(null);
+            }
+        }
     };
 
     return (
         <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-            <div className="flex flex-col h-screen bg-gray-900 text-white overflow-hidden font-sans" onClick={() => setContextMenu(null)}>
+            <div className="flex flex-col h-screen bg-ui-bg-primary text-ui-text-primary overflow-hidden font-sans" onClick={() => setContextMenu(null)}>
                 {/* Menu Bar */}
                 <MenuBar
                     onOpenLibrary={handleOpenLibrary}
@@ -493,18 +608,22 @@ function App() {
                     onNewConnection={() => setConnectionModal(true)}
                     onLoadConnections={handleLoadConnectionsFromFile}
                     onSaveConnections={handleSaveConnectionsToFile}
+                    onAbout={() => setAboutModal(true)}
+                    currentTheme={theme}
+                    availableThemes={availableThemes}
+                    onThemeChange={switchTheme}
                 />
 
                 <div className="flex flex-1 overflow-hidden">
                     {/* Sidebar */}
                     <div
-                        className="flex flex-col border-r border-gray-700 relative flex-shrink-0"
+                        className="flex flex-col border-r border-ui-border relative flex-shrink-0"
                         style={{ width: sidebarWidth }}
                     >
-                        <div className="p-4 border-b border-gray-700 flex justify-between items-center bg-gray-800">
-                            <span className="font-bold text-xl tracking-tight text-blue-400">Query Mole</span>
+                        <div className="p-4 border-b border-tree-border flex justify-between items-center bg-tree-header-bg">
+                            <span className="font-bold text-xl tracking-tight text-tree-header-text">Query Mole</span>
                             <div className="flex gap-1">
-                                <button onClick={() => setModal({ type: 'ADD_FOLDER' })} className="text-gray-400 hover:text-white" title="Add Folder">+</button>
+                                <button onClick={() => setModal({ type: 'ADD_FOLDER' })} className="text-tree-text-muted hover:text-tree-text" title="Add Folder">+</button>
                             </div>
                         </div>
                         <div className="flex-1 overflow-y-auto p-0"> {/* Removed padding to fit selector */}
@@ -516,12 +635,13 @@ function App() {
                                 connections={connections}
                                 activeConnectionId={activeConnectionId}
                                 onConnectionChange={setActiveConnectionId}
+                                onDeleteConnection={handleDeleteConnection}
                             />
                         </div>
 
                         {/* Sidebar Resizer Handle */}
                         <div
-                            className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-500 transition-colors z-10"
+                            className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-ui-resize-handle transition-colors z-10"
                             onMouseDown={startResizingSidebar}
                         />
                     </div>
@@ -530,25 +650,25 @@ function App() {
                     <div className="flex-1 flex flex-col min-w-0 h-full">
                         {/* Top: Editor */}
                         <div
-                            className="flex flex-col bg-gray-800 border-b border-gray-700 relative flex-shrink-0"
+                            className="flex flex-col bg-editor-header-bg border-b border-editor-border relative flex-shrink-0"
                             style={{ height: isEditorVisible ? editorHeight : 'auto' }}
                         >
-                            <div className="p-2 border-b border-gray-700 flex justify-between items-center bg-gray-800 select-none">
+                            <div className="p-2 border-b border-editor-border flex justify-between items-center bg-editor-header-bg select-none">
                                 <div className="flex items-center gap-2">
                                     <button
                                         onClick={() => setIsEditorVisible(!isEditorVisible)}
-                                        className="text-gray-400 hover:text-white transition-colors focus:outline-none"
+                                        className="text-editor-header-text hover:text-editor-text transition-colors focus:outline-none"
                                         title={isEditorVisible ? "Collapse Editor" : "Expand Editor"}
                                     >
                                         {isEditorVisible ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                                     </button>
-                                    <span className="text-sm text-gray-400 font-medium truncate">
+                                    <span className="text-sm text-editor-header-text font-medium truncate">
                                         {selectedQuery ? selectedQuery.name : 'Select a query'}
                                     </span>
                                     {selectedQuery && sql !== (selectedQuery.query || '') && (
                                         <button
                                             onClick={handleSaveQuery}
-                                            className="text-gray-400 hover:text-blue-400 transition-colors"
+                                            className="text-editor-header-text hover:text-tree-item-selected-text transition-colors"
                                             title="Save Query Change"
                                         >
                                             <Save size={16} />
@@ -558,7 +678,7 @@ function App() {
                                 <button
                                     onClick={handleExecute}
                                     disabled={loading || !sql}
-                                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-600 text-white px-4 py-1.5 rounded text-sm font-medium transition-colors"
+                                    className="flex items-center gap-2 bg-editor-button-bg hover:bg-editor-button-hover disabled:bg-editor-button-disabled text-editor-button-text px-4 py-1.5 rounded text-sm font-medium transition-colors"
                                 >
                                     <Play size={16} />
                                     Execute
@@ -572,7 +692,7 @@ function App() {
                                     </div>
                                     {/* Editor Resizer Handle */}
                                     <div
-                                        className="absolute bottom-0 left-0 w-full h-1 cursor-row-resize hover:bg-blue-500 transition-colors z-10"
+                                        className="absolute bottom-0 left-0 w-full h-1 cursor-row-resize hover:bg-ui-resize-handle transition-colors z-10"
                                         onMouseDown={startResizingEditor}
                                     />
                                 </>
@@ -580,30 +700,34 @@ function App() {
                         </div>
 
                         {/* Middle: Results */}
-                        <div className="flex-1 overflow-hidden bg-gray-900 flex flex-col min-h-0">
+                        <div className="flex-1 overflow-hidden bg-grid-bg flex flex-col min-h-0">
                             {error && (
-                                <div className="p-4 bg-red-900/50 text-red-200 border-b border-red-800 flex-shrink-0">
+                                <div className="p-4 bg-ui-error-bg text-ui-error-text border-b border-ui-error-border flex-shrink-0">
                                     Error: {error}
                                 </div>
                             )}
                             <div className="flex-1 overflow-auto">
-                                <ResultsTable results={results} loading={loading} />
+                                <ResultsTable ref={resultsTableRef} results={results} loading={loading} />
                             </div>
                         </div>
 
                         {/* Bottom: Footer */}
                         <div
-                            className="relative bg-gray-800 border-t border-gray-700 flex-shrink-0"
+                            className="relative bg-ui-bg-secondary border-t border-ui-border flex-shrink-0"
                             style={{ height: footerHeight }}
                         >
                             {/* Footer Resizer Handle */}
                             <div
-                                className="absolute top-0 left-0 w-full h-1 cursor-row-resize hover:bg-blue-500 transition-colors z-10"
+                                className="absolute top-0 left-0 w-full h-1 cursor-row-resize hover:bg-ui-resize-handle transition-colors z-10"
                                 onMouseDown={startResizingFooter}
                             />
                             <StatusFooter
                                 executionTime={results?.executionTimeMs}
                                 rowCount={results?.rows?.length}
+                                onExportCSV={handleExportCSV}
+                                onExportExcel={handleExportExcel}
+                                onExportPDF={handleExportPDF}
+                                hasResults={!!results && results.rows && results.rows.length > 0}
                             />
                         </div>
                     </div>
@@ -656,15 +780,19 @@ function App() {
                     />
                 )}
 
+                {aboutModal && (
+                    <AboutModal onClose={() => setAboutModal(false)} />
+                )}
+
                 <DragOverlay>
                     {activeDragNode ? (
-                        <div className="px-2 py-1 bg-gray-700 rounded shadow text-white opacity-80">
+                        <div className="px-2 py-1 bg-tree-item-hover rounded shadow text-tree-text opacity-80">
                             {activeDragNode.name}
                         </div>
                     ) : null}
                 </DragOverlay>
             </div>
-        </DndContext>
+        </DndContext >
     );
 }
 

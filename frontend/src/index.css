@@ -1,3 +1,286 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ===================================
+   Query Mole Color Customization
+   ===================================
+   Modify these CSS variables to customize the application colors.
+   All colors are centralized here for easy theming.
+*/
+
+:root {
+  /* ===== Tree/Sidebar Colors ===== */
+  --tree-bg: #1f2937;
+  /* Main sidebar background */
+  --tree-bg-secondary: rgba(31, 41, 55, 0.5);
+  /* Secondary areas (connection selector) */
+  --tree-text: #d1d5db;
+  /* Default text color */
+  --tree-text-muted: #9ca3af;
+  /* Muted text (like chevrons) */
+  --tree-item-hover: #374151;
+  /* Hover state background */
+  --tree-item-selected-bg: rgba(30, 58, 138, 0.5);
+  /* Selected item background */
+  --tree-item-selected-text: #93c5fd;
+  /* Selected item text */
+  --tree-border: #374151;
+  /* Borders and separators */
+  --tree-icon-folder: #eab308;
+  /* Folder icon color */
+  --tree-icon-file: #60a5fa;
+  /* File icon color */
+  --tree-header-bg: #1f2937;
+  /* Header background */
+  --tree-header-text: #60a5fa;
+  /* Header title color */
+
+  /* ===== Query Editor Colors ===== */
+  --editor-bg: #1f2937;
+  /* Editor background */
+  --editor-text: #e5e7eb;
+  /* Editor text color */
+  --editor-border: #374151;
+  /* Editor borders */
+  --editor-header-bg: #1f2937;
+  /* Editor header background */
+  --editor-header-text: #9ca3af;
+  /* Editor header text */
+  --editor-button-bg: #2563eb;
+  /* Execute button background */
+  --editor-button-hover: #1d4ed8;
+  /* Execute button hover */
+  --editor-button-text: #ffffff;
+  /* Execute button text */
+  --editor-button-disabled: #4b5563;
+  /* Disabled button background */
+
+  /* ===== Results Grid Colors ===== */
+  --grid-bg: #111827;
+  /* Grid body background */
+  --grid-header-bg: #1f2937;
+  /* Header row background */
+  --grid-header-text: #9ca3af;
+  /* Header text color */
+  --grid-header-hover: #374151;
+  /* Header hover background */
+  --grid-text: #d1d5db;
+  /* Cell text color */
+  --grid-text-null: #6b7280;
+  /* Null value text color */
+  --grid-border: #374151;
+  /* Grid borders */
+  --grid-row-border: #1f2937;
+  /* Row separator borders */
+  --grid-row-hover: rgba(55, 65, 81, 0.5);
+  /* Row hover background */
+  --grid-pagination-bg: #1f2937;
+  /* Pagination bar background */
+  --grid-pagination-text: #9ca3af;
+  /* Pagination text */
+  --grid-pagination-button-hover: #374151;
+  /* Pagination button hover */
+
+  /* ===== General UI Colors ===== */
+  --ui-bg-primary: #111827;
+  /* Primary background (main app) */
+  --ui-bg-secondary: #1f2937;
+  /* Secondary background */
+  --ui-border: #374151;
+  /* General borders */
+  --ui-text-primary: #ffffff;
+  /* Primary text */
+  --ui-text-secondary: #d1d5db;
+  /* Secondary text */
+  --ui-text-muted: #9ca3af;
+  /* Muted text */
+  --ui-error-bg: rgba(127, 29, 29, 0.5);
+  /* Error background */
+  --ui-error-text: #fecaca;
+  /* Error text */
+  --ui-error-border: #991b1b;
+  /* Error border */
+  --ui-resize-handle: #3b82f6;
+  /* Resize handle hover color */
+
+  /* ===== Loading/Spinner Colors ===== */
+  --ui-spinner: #3b82f6;
+  /* Loading spinner color */
+
+  /* ===== Menu Bar Colors ===== */
+  --menu-bg: #1f2937;
+  /* Menu bar background */
+  --menu-text: #d1d5db;
+  /* Menu text color */
+  --menu-border: #374151;
+  /* Menu border color */
+  --menu-hover-bg: #374151;
+  /* Menu item hover background */
+  --menu-hover-text: #ffffff;
+  /* Menu item hover text */
+  --menu-dropdown-bg: #1f2937;
+  /* Dropdown background */
+  --menu-dropdown-border: #374151;
+  /* Dropdown border */
+
+  /* ===== Status Footer Colors ===== */
+  --footer-bg: #1f2937;
+  /* Footer background */
+  --footer-text: #9ca3af;
+  /* Footer text color */
+  --footer-border: #374151;
+  /* Footer border */
+  --footer-item-bg: #374151;
+  /* Footer item/button background */
+  --footer-item-text: #d1d5db;
+  /* Footer item/button text */
+  --footer-item-hover: #4b5563;
+  /* Footer item hover background */
+}
+
+/* ===================================
+   Light Theme
+   ===================================
+   Activate by adding data-theme="light" to the root element
+*/
+
+[data-theme="light"] {
+  /* ===== Tree/Sidebar Colors ===== */
+  --tree-bg: #f3f4f6;
+  /* Light gray background */
+  --tree-bg-secondary: rgba(229, 231, 235, 0.8);
+  /* Lighter secondary */
+  --tree-text: #1f2937;
+  /* Dark text */
+  --tree-text-muted: #6b7280;
+  /* Muted gray text */
+  --tree-item-hover: #e5e7eb;
+  /* Light hover */
+  --tree-item-selected-bg: #dbeafe;
+  /* Light blue selection */
+  --tree-item-selected-text: #1e40af;
+  /* Dark blue text */
+  --tree-border: #d1d5db;
+  /* Light borders */
+  --tree-icon-folder: #f59e0b;
+  /* Amber folder */
+  --tree-icon-file: #3b82f6;
+  /* Blue file */
+  --tree-header-bg: #e5e7eb;
+  /* Light header */
+  --tree-header-text: #1e40af;
+  /* Dark blue title */
+
+  /* ===== Query Editor Colors ===== */
+  --editor-bg: #ffffff;
+  /* White background */
+  --editor-text: #1f2937;
+  /* Dark text */
+  --editor-border: #d1d5db;
+  /* Light borders */
+  --editor-header-bg: #f3f4f6;
+  /* Light gray header */
+  --editor-header-text: #6b7280;
+  /* Gray text */
+  --editor-button-bg: #2563eb;
+  /* Blue button */
+  --editor-button-hover: #1d4ed8;
+  /* Darker blue hover */
+  --editor-button-text: #ffffff;
+  /* White text */
+  --editor-button-disabled: #d1d5db;
+  /* Gray disabled */
+
+  /* ===== Results Grid Colors ===== */
+  --grid-bg: #ffffff;
+  /* White grid */
+  --grid-header-bg: #f3f4f6;
+  /* Light gray header */
+  --grid-header-text: #4b5563;
+  /* Dark gray text */
+  --grid-header-hover: #e5e7eb;
+  /* Lighter hover */
+  --grid-text: #1f2937;
+  /* Dark text */
+  --grid-text-null: #9ca3af;
+  /* Gray null values */
+  --grid-border: #d1d5db;
+  /* Light borders */
+  --grid-row-border: #e5e7eb;
+  /* Row separators */
+  --grid-row-hover: rgba(229, 231, 235, 0.6);
+  /* Light hover */
+  --grid-pagination-bg: #f3f4f6;
+  /* Light pagination */
+  --grid-pagination-text: #6b7280;
+  /* Gray text */
+  --grid-pagination-button-hover: #e5e7eb;
+  /* Light hover */
+
+  /* ===== General UI Colors ===== */
+  --ui-bg-primary: #f9fafb;
+  /* Very light background */
+  --ui-bg-secondary: #f3f4f6;
+  /* Light gray background */
+  --ui-border: #d1d5db;
+  /* Light borders */
+  --ui-text-primary: #111827;
+  /* Dark text */
+  --ui-text-secondary: #374151;
+  /* Dark gray text */
+  --ui-text-muted: #6b7280;
+  /* Muted text */
+  --ui-error-bg: rgba(254, 202, 202, 0.5);
+  /* Light red background */
+  --ui-error-text: #991b1b;
+  /* Dark red text */
+  --ui-error-border: #fca5a5;
+  /* Light red border */
+  --ui-resize-handle: #3b82f6;
+  /* Blue handle */
+  --ui-spinner: #3b82f6;
+  /* Blue spinner */
+
+  /* ===== Menu Bar Colors ===== */
+  --menu-bg: #ffffff;
+  /* White background */
+  --menu-text: #374151;
+  /* Dark gray text */
+  --menu-border: #e5e7eb;
+  /* Light border */
+  --menu-hover-bg: #f3f4f6;
+  /* Light gray hover */
+  --menu-hover-text: #111827;
+  /* Dark text hover */
+  --menu-dropdown-bg: #ffffff;
+  /* White dropdown */
+  --menu-dropdown-border: #e5e7eb;
+  /* Light border */
+
+  /* ===== Status Footer Colors ===== */
+  --footer-bg: #f3f4f6;
+  /* Light gray background */
+  --footer-text: #6b7280;
+  /* Gray text */
+  --footer-border: #e5e7eb;
+  /* Light border */
+  --footer-item-bg: #ffffff;
+  /* White button bg */
+  --footer-item-text: #374151;
+  /* Dark gray button text */
+  --footer-item-hover: #f9fafb;
+  /* Very light hover */
+}
+
+/* Optional: Add theme variants by overriding variables */
+/* Example - Light Theme (uncomment to activate)
+[data-theme="light"] {
+  --tree-bg: #f3f4f6;
+  --tree-text: #1f2937;
+  --editor-bg: #ffffff;
+  --editor-text: #1f2937;
+  --grid-bg: #ffffff;
+  --grid-text: #1f2937;
+}
+*/

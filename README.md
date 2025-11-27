@@ -36,6 +36,24 @@ npm run dev
 ```
 The frontend will start on `http://localhost:5173`.
 
+## Development
+
+For faster development with hot-reload (recommended while developing):
+
+**Terminal 1 - Backend:**
+```bash
+cd backend
+./gradlew bootRun
+```
+
+**Terminal 2 - Frontend:**
+```bash
+cd frontend
+npm run dev
+```
+
+This allows you to see frontend changes immediately without rebuilding the JAR. The frontend will be on `http://localhost:5173` and will proxy API calls to the backend on `http://localhost:8080`.
+
 ## CI/CD
 
 [![CI Pipeline](https://github.com/petruz/query-mole/actions/workflows/ci.yml/badge.svg)](https://github.com/petruz/query-mole/actions/workflows/ci.yml)
