@@ -1,0 +1,2 @@
+# This file ensures the drivers/ directory is tracked by Git
+# while the .gitignore file ignores all *.jar files in this directory

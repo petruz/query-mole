@@ -1,6 +1,7 @@
 package com.querymole.backend.service;
 
 import com.querymole.backend.dto.ExecutionResponse;
+import com.querymole.backend.util.TypeConverterRegistry;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Service;
@@ -19,9 +20,13 @@ public class JdbcExecutorService {
 
     private final DriverLoaderService driverLoaderService;
 
-    public JdbcExecutorService(JdbcTemplate jdbcTemplate, DriverLoaderService driverLoaderService) {
+    private final TypeConverterRegistry typeConverterRegistry;
+
+    public JdbcExecutorService(JdbcTemplate jdbcTemplate, DriverLoaderService driverLoaderService,
+            TypeConverterRegistry typeConverterRegistry) {
         this.jdbcTemplate = jdbcTemplate;
         this.driverLoaderService = driverLoaderService;
+        this.typeConverterRegistry = typeConverterRegistry;
     }
 
     public void switchConnection(String url, String username, String password, String driverClassName) {
@@ -71,7 +76,10 @@ public class JdbcExecutorService {
                 while (rs.next()) {
                     Map<String, Object> row = new HashMap<>();
                     for (String column : columns) {
-                        row.put(column, rs.getObject(column));
+                        Object value = rs.getObject(column);
+                        // Convert database-specific types to JSON-serializable formats
+                        Object convertedValue = typeConverterRegistry.convertToSerializable(value);
+                        row.put(column, convertedValue);
                     }
                     rows.add(row);
                 }
