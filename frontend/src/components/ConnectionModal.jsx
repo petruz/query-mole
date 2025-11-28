@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const DATABASE_TYPES = [
     {
@@ -45,10 +46,36 @@ const ConnectionModal = ({ onSave, onCancel, onTest, initialData }) => {
         dbType: 'postgresql',
         host: 'localhost',
         port: '5432',
+        database: 'postgres',
         username: 'postgres',
         password: '',
     });
     const [testStatus, setTestStatus] = useState(null);
+    const [availableDrivers, setAvailableDrivers] = useState([]);
+    const [loadingDrivers, setLoadingDrivers] = useState(true);
+
+    // Fetch available drivers on mount
+    useEffect(() => {
+        const fetchDrivers = async () => {
+            try {
+                const response = await axios.get('/api/connection/drivers');
+                setAvailableDrivers(response.data);
+                console.log('Available drivers:', response.data);
+
+                // If no drivers available, show warning
+                if (response.data.length === 0) {
+                    console.warn('No JDBC drivers found in drivers/ folder');
+                }
+            } catch (error) {
+                console.error('Failed to fetch available drivers:', error);
+                setAvailableDrivers([]);
+            } finally {
+                setLoadingDrivers(false);
+            }
+        };
+
+        fetchDrivers();
+    }, []);
 
     useEffect(() => {
         if (initialData) {
@@ -59,6 +86,7 @@ const ConnectionModal = ({ onSave, onCancel, onTest, initialData }) => {
                 dbType: initialData.dbType || 'postgresql',
                 host: initialData.host || 'localhost',
                 port: initialData.port || '5432',
+                database: initialData.database || 'postgres',
             });
         }
     }, [initialData]);
@@ -67,12 +95,13 @@ const ConnectionModal = ({ onSave, onCancel, onTest, initialData }) => {
         const { name, value } = e.target;
 
         if (name === 'dbType') {
-            // When database type changes, update port to default
+            // When database type changes, update port and database to defaults
             const dbConfig = DATABASE_TYPES.find(db => db.id === value);
             setFormData({
                 ...formData,
                 dbType: value,
-                port: dbConfig.defaultPort.toString()
+                port: dbConfig.defaultPort.toString(),
+                database: dbConfig.defaultDb
             });
         } else {
             setFormData({ ...formData, [name]: value });
@@ -89,7 +118,7 @@ const ConnectionModal = ({ onSave, onCancel, onTest, initialData }) => {
         const url = dbConfig.urlTemplate
             .replace('{host}', formData.host)
             .replace('{port}', formData.port)
-            .replace('{db}', dbConfig.defaultDb);
+            .replace('{db}', formData.database);
 
         return {
             name: formData.name,
@@ -101,6 +130,7 @@ const ConnectionModal = ({ onSave, onCancel, onTest, initialData }) => {
             dbType: formData.dbType,
             host: formData.host,
             port: formData.port,
+            database: formData.database,
         };
     };
 
@@ -113,7 +143,20 @@ const ConnectionModal = ({ onSave, onCancel, onTest, initialData }) => {
             const result = await onTest(connData);
             setTestStatus(result);
         } catch (err) {
-            setTestStatus({ success: false, message: 'Test failed: ' + err.message });
+            // Extract detailed error message from response
+            let errorMessage = 'Test failed';
+            if (err.response?.data?.error) {
+                errorMessage = err.response.data.error;
+            } else if (err.message) {
+                errorMessage = err.message;
+            }
+
+            setTestStatus({
+                success: false,
+                message: 'Connection test failed',
+                error: errorMessage,
+                details: err.response?.data
+            });
         }
     };
 
@@ -126,112 +169,156 @@ const ConnectionModal = ({ onSave, onCancel, onTest, initialData }) => {
 
     const selectedDb = DATABASE_TYPES.find(db => db.id === formData.dbType);
 
+    // Filter database types to only show those with available drivers
+    const availableDbTypes = DATABASE_TYPES.filter(dbType => {
+        // If still loading drivers, show all types
+        if (loadingDrivers) return true;
+
+        // If no drivers detected, show all types (fallback to classpath drivers)
+        if (availableDrivers.length === 0) return true;
+
+        // Check if driver is available
+        return availableDrivers.some(driver => driver.databaseType === dbType.id);
+    });
+
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-gray-800 border border-gray-700 rounded-lg shadow-xl w-96 p-6">
-                <h2 className="text-xl font-bold text-white mb-4">New Connection</h2>
+        <div className="fixed inset-0 bg-modal-overlay flex items-center justify-center z-50">
+            <div className="bg-modal-bg border border-modal-border rounded-lg shadow-xl w-96 p-6 max-h-[90vh] overflow-y-auto">
+                <h2 className="text-xl font-bold text-modal-text mb-4">New Connection</h2>
 
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">Name</label>
+                        <label className="block text-sm font-medium text-modal-text-muted mb-1">Name</label>
                         <input
                             name="name"
                             value={formData.name}
                             onChange={handleChange}
-                            className="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500"
+                            className="w-full bg-modal-input-bg border border-modal-input-border rounded px-3 py-2 text-modal-input-text focus:outline-none focus:border-blue-500"
                             placeholder="My Database"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">Database Type</label>
+                        <label className="block text-sm font-medium text-modal-text-muted mb-1">Database Type</label>
                         <select
                             name="dbType"
                             value={formData.dbType}
                             onChange={handleChange}
-                            className="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500"
+                            className="w-full bg-modal-input-bg border border-modal-input-border rounded px-3 py-2 text-modal-input-text focus:outline-none focus:border-blue-500"
                         >
-                            {DATABASE_TYPES.map(db => (
+                            {availableDbTypes.map(db => (
                                 <option key={db.id} value={db.id}>
                                     {db.icon} {db.name}
                                 </option>
                             ))}
                         </select>
+                        {!loadingDrivers && availableDrivers.length > 0 && (
+                            <p className="text-xs text-modal-text-muted mt-1">
+                                {availableDrivers.length} driver(s) available in drivers/ folder
+                            </p>
+                        )}
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
                         <div>
-                            <label className="block text-sm font-medium text-gray-400 mb-1">Host</label>
+                            <label className="block text-sm font-medium text-modal-text-muted mb-1">Host</label>
                             <input
                                 name="host"
                                 value={formData.host}
                                 onChange={handleChange}
-                                className="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500"
+                                className="w-full bg-modal-input-bg border border-modal-input-border rounded px-3 py-2 text-modal-input-text focus:outline-none focus:border-blue-500"
                                 placeholder="localhost"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-400 mb-1">Port</label>
+                            <label className="block text-sm font-medium text-modal-text-muted mb-1">Port</label>
                             <input
                                 name="port"
                                 value={formData.port}
                                 onChange={handleChange}
-                                className="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500"
+                                className="w-full bg-modal-input-bg border border-modal-input-border rounded px-3 py-2 text-modal-input-text focus:outline-none focus:border-blue-500"
                                 placeholder={selectedDb?.defaultPort.toString()}
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">Username</label>
+                        <label className="block text-sm font-medium text-modal-text-muted mb-1">Database</label>
+                        <input
+                            name="database"
+                            value={formData.database}
+                            onChange={handleChange}
+                            className="w-full bg-modal-input-bg border border-modal-input-border rounded px-3 py-2 text-modal-input-text focus:outline-none focus:border-blue-500"
+                            placeholder={selectedDb?.defaultDb}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-modal-text-muted mb-1">Username</label>
                         <input
                             name="username"
                             value={formData.username}
                             onChange={handleChange}
-                            className="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500"
+                            className="w-full bg-modal-input-bg border border-modal-input-border rounded px-3 py-2 text-modal-input-text focus:outline-none focus:border-blue-500"
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">Password</label>
+                        <label className="block text-sm font-medium text-modal-text-muted mb-1">Password</label>
                         <input
                             name="password"
                             type="password"
                             value={formData.password}
                             onChange={handleChange}
-                            className="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500"
+                            className="w-full bg-modal-input-bg border border-modal-input-border rounded px-3 py-2 text-modal-input-text focus:outline-none focus:border-blue-500"
                         />
                     </div>
 
                     {selectedDb && (
-                        <div className="text-xs text-gray-500 bg-gray-900 p-2 rounded">
-                            <div><strong>Database:</strong> {selectedDb.defaultDb}</div>
+                        <div className="text-xs text-modal-text-muted bg-modal-input-bg p-2 rounded">
                             <div><strong>Driver:</strong> {selectedDb.driverClass}</div>
+                            <div><strong>URL:</strong> {selectedDb.urlTemplate
+                                .replace('{host}', formData.host)
+                                .replace('{port}', formData.port)
+                                .replace('{db}', formData.database)}
+                            </div>
                         </div>
                     )}
                 </div>
 
                 {testStatus && (
-                    <div className={`mt-4 text-sm ${testStatus.success ? 'text-green-400' : 'text-red-400'}`}>
-                        {testStatus.message}
+                    <div className={`mt-4 p-3 rounded text-sm ${testStatus.success ? 'bg-green-900/30 border border-green-700' : 'bg-red-900/30 border border-red-700'}`}>
+                        <div className={testStatus.success ? 'text-green-400' : 'text-red-400'}>
+                            <strong>{testStatus.message}</strong>
+                        </div>
+                        {testStatus.error && (
+                            <div className="text-red-300 mt-2 text-xs">
+                                <strong>Error:</strong> {testStatus.error}
+                            </div>
+                        )}
+                        {testStatus.details?.errorType && (
+                            <div className="text-red-300 mt-1 text-xs">
+                                <strong>Type:</strong> {testStatus.details.errorType}
+                            </div>
+                        )}
                     </div>
                 )}
 
                 <div className="flex justify-end gap-2 mt-6">
                     <button
                         onClick={handleTest}
-                        className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded text-sm font-medium transition-colors"
+                        className="px-4 py-2 bg-modal-button-secondary-bg hover:bg-modal-button-secondary-hover text-modal-button-secondary-text border border-modal-input-border rounded text-sm font-medium transition-colors"
                     >
                         Test
                     </button>
                     <button
                         onClick={onCancel}
-                        className="px-4 py-2 text-gray-400 hover:text-white transition-colors text-sm font-medium"
+                        className="px-4 py-2 bg-transparent border border-modal-input-border text-modal-text-secondary hover:bg-modal-button-secondary-bg transition-colors text-sm font-medium rounded"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={handleSave}
-                        className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-sm font-medium transition-colors"
+                        className="px-4 py-2 bg-modal-button-primary-bg hover:bg-modal-button-primary-hover text-modal-button-text border border-modal-button-primary-bg rounded text-sm font-medium transition-colors"
                     >
                         Save
                     </button>

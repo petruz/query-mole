@@ -576,3 +576,26 @@ Caused by: java.net.ConnectException: Connection refused
 2025-11-28 14:53:27.672 [http-nio-8080-exec-7] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
 2025-11-28 14:53:35.657 [SpringApplicationShutdownHook] INFO  o.s.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
 2025-11-28 14:53:35.674 [tomcat-shutdown] INFO  o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-11-28 15:05:39.474 [main] INFO  c.q.backend.BackendApplication - Starting BackendApplication using Java 21.0.9 with PID 905314 (/home/petruz/git-repo/query-mole/backend/build/classes/java/main started by petruz in /home/petruz/git-repo/query-mole/backend)
+2025-11-28 15:05:39.478 [main] DEBUG c.q.backend.BackendApplication - Running with Spring Boot v4.0.0, Spring v7.0.1
+2025-11-28 15:05:39.480 [main] INFO  c.q.backend.BackendApplication - No active profile set, falling back to 1 default profile: "default"
+2025-11-28 15:05:41.139 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-11-28 15:05:41.156 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-11-28 15:05:41.160 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-11-28 15:05:41.161 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.14]
+2025-11-28 15:05:41.214 [main] INFO  o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 1661 ms
+2025-11-28 15:05:41.520 [main] INFO  o.s.b.w.a.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2025-11-28 15:05:42.524 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-11-28 15:05:42.596 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2025-11-28 15:05:42.620 [main] INFO  c.q.backend.BackendApplication - Started BackendApplication in 3.936 seconds (process running for 4.524)
+2025-11-28 15:05:55.555 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-28 15:05:55.556 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-11-28 15:05:55.558 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2025-11-28 15:05:56.024 [http-nio-8080-exec-1] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:clickhouse://localhost:8124/default
+2025-11-28 15:05:56.025 [http-nio-8080-exec-1] DEBUG c.q.b.service.DriverLoaderService - Loading driver: com.clickhouse.jdbc.ClickHouseDriver
+2025-11-28 15:05:56.037 [http-nio-8080-exec-1] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.9.4-all.jar
+2025-11-28 15:05:56.038 [http-nio-8080-exec-1] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
+2025-11-28 15:05:56.172 [http-nio-8080-exec-1] INFO  c.q.b.service.DriverLoaderService - Successfully loaded driver: com.clickhouse.jdbc.ClickHouseDriver
+2025-11-28 15:05:56.181 [http-nio-8080-exec-1] INFO  c.q.b.c.ConnectionController - Successfully connected to database
+2025-11-28 16:16:23.485 [SpringApplicationShutdownHook] INFO  o.s.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-28 16:16:23.999 [tomcat-shutdown] INFO  o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete
