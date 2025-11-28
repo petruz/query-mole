@@ -137,6 +137,42 @@
   /* Footer item/button text */
   --footer-item-hover: #4b5563;
   /* Footer item hover background */
+
+  /* ===== Modal Colors ===== */
+  --modal-overlay: rgba(0, 0, 0, 0.5);
+  /* Modal overlay background */
+  --modal-bg: #1f2937;
+  /* Modal background */
+  --modal-border: #374151;
+  /* Modal border */
+  --modal-text: #ffffff;
+  /* Modal primary text */
+  --modal-text-secondary: #d1d5db;
+  /* Modal secondary text */
+  --modal-text-muted: #9ca3af;
+  /* Modal muted text */
+  --modal-input-bg: #111827;
+  /* Modal input background (dark) */
+  --modal-input-border: #4b5563;
+  /* Modal input border (visible) */
+  --modal-input-text: #ffffff;
+  /* Modal input text (white) */
+  --modal-button-primary-bg: #2563eb;
+  /* Primary button background */
+  --modal-button-primary-hover: #1d4ed8;
+  /* Primary button hover */
+  --modal-button-secondary-bg: #4b5563;
+  /* Secondary button background (darker gray) */
+  --modal-button-secondary-hover: #6b7280;
+  /* Secondary button hover */
+  --modal-button-text: #ffffff;
+  /* Primary button text color */
+  --modal-button-secondary-text: #ffffff;
+  /* Secondary button text color */
+  --modal-link: #60a5fa;
+  /* Link color */
+  --modal-link-hover: #93c5fd;
+  /* Link hover color */
 }
 
 /* ===================================
@@ -271,6 +307,42 @@
   /* Dark gray button text */
   --footer-item-hover: #f9fafb;
   /* Very light hover */
+
+  /* ===== Modal Colors ===== */
+  --modal-overlay: rgba(0, 0, 0, 0.3);
+  /* Modal overlay background (lighter) */
+  --modal-bg: #ffffff;
+  /* White modal background */
+  --modal-border: #e5e7eb;
+  /* Light border */
+  --modal-text: #111827;
+  /* Dark text */
+  --modal-text-secondary: #374151;
+  /* Dark gray text */
+  --modal-text-muted: #6b7280;
+  /* Gray muted text */
+  --modal-input-bg: #f9fafb;
+  /* Very light input background */
+  --modal-input-border: #d1d5db;
+  /* Light input border */
+  --modal-input-text: #111827;
+  /* Dark input text */
+  --modal-button-primary-bg: #2563eb;
+  /* Primary button background */
+  --modal-button-primary-hover: #1d4ed8;
+  /* Primary button hover */
+  --modal-button-secondary-bg: #e5e7eb;
+  /* Light secondary button */
+  --modal-button-secondary-hover: #d1d5db;
+  /* Secondary button hover */
+  --modal-button-text: #ffffff;
+  /* Primary button text color */
+  --modal-button-secondary-text: #374151;
+  /* Secondary button text color (dark for light theme) */
+  --modal-link: #2563eb;
+  /* Link color (darker for light theme) */
+  --modal-link-hover: #1d4ed8;
+  /* Link hover color */
 }
 
 /* Optional: Add theme variants by overriding variables */
