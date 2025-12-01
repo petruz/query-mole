@@ -12,7 +12,7 @@ export const useTheme = () => {
 
 export const ThemeProvider = ({ children }) => {
     // Available themes
-    const availableThemes = ['dark', 'light'];
+    const availableThemes = ['dark', 'light', 'green-ambient'];
 
     // Initialize theme from localStorage or default to 'dark'
     const [theme, setTheme] = useState(() => {

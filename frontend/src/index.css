@@ -37,9 +37,9 @@
   /* Header title color */
 
   /* ===== Query Editor Colors ===== */
-  --editor-bg: #1f2937;
-  /* Editor background */
-  --editor-text: #e5e7eb;
+  --editor-bg: #002147
+    /* Editor background */
+    --editor-text: #e5e7eb;
   /* Editor text color */
   --editor-border: #374151;
   /* Editor borders */
@@ -59,9 +59,9 @@
   /* ===== Results Grid Colors ===== */
   --grid-bg: #111827;
   /* Grid body background */
-  --grid-header-bg: #1f2937;
+  --grid-header-bg: #2A384B;
   /* Header row background */
-  --grid-header-text: #9ca3af;
+  --grid-header-text: #dab25e;
   /* Header text color */
   --grid-header-hover: #374151;
   /* Header hover background */
@@ -343,6 +343,176 @@
   /* Link color (darker for light theme) */
   --modal-link-hover: #1d4ed8;
   /* Link hover color */
+}
+
+/* ===================================
+   Green Ambient Theme
+   ===================================
+   Inspired by natural teal/green tones with warm beige accents
+*/
+
+[data-theme="green-ambient"] {
+  /* ===== Tree/Sidebar Colors ===== */
+  --tree-bg: #2d3e3a;
+  /* Dark teal-green background */
+  --tree-bg-secondary: rgba(45, 62, 58, 0.6);
+  /* Semi-transparent teal */
+  --tree-text: #d4d9d4;
+  /* Light grayish-green text */
+  --tree-text-muted: #8a9a8e;
+  /* Muted sage green */
+  --tree-item-hover: #3a4f48;
+  /* Slightly lighter teal hover */
+  --tree-item-selected-bg: rgba(95, 135, 120, 0.4);
+  /* Muted teal selection */
+  --tree-item-selected-text: #a8d5ba;
+  /* Light mint green */
+  --tree-border: #3a4f48;
+  /* Teal border */
+  --tree-icon-folder: #c9b896;
+  /* Warm beige for folders */
+  --tree-icon-file: #7fb5a0;
+  /* Soft teal for files */
+  --tree-header-bg: #2d3e3a;
+  /* Dark teal header */
+  --tree-header-text: #a8d5ba;
+  /* Light mint title */
+
+  /* ===== Query Editor Colors ===== */
+  --editor-bg: #2d3e3a;
+  /* Dark teal background */
+  --editor-text: #e8ebe8;
+  /* Very light green-tinted text */
+  --editor-border: #3a4f48;
+  /* Teal border */
+  --editor-header-bg: #2d3e3a;
+  /* Dark teal header */
+  --editor-header-text: #8a9a8e;
+  /* Muted sage text */
+  --editor-button-bg: #5f8778;
+  /* Muted teal button */
+  --editor-button-hover: #4a6b5e;
+  /* Darker teal hover */
+  --editor-button-text: #ffffff;
+  /* White text */
+  --editor-button-disabled: #4a5550;
+  /* Disabled gray-green */
+
+  /* ===== Results Grid Colors ===== */
+  --grid-bg: #232f2c;
+  /* Very dark teal */
+  --grid-header-bg: #2d3e3a;
+  /* Dark teal header */
+  --grid-header-text: #8a9a8e;
+  /* Muted sage */
+  --grid-header-hover: #3a4f48;
+  /* Teal hover */
+  --grid-text: #d4d9d4;
+  /* Light grayish-green */
+  --grid-text-null: #6b7a70;
+  /* Muted gray-green for nulls */
+  --grid-border: #3a4f48;
+  /* Teal borders */
+  --grid-row-border: #2d3e3a;
+  /* Row separator */
+  --grid-row-hover: rgba(58, 79, 72, 0.5);
+  /* Semi-transparent teal hover */
+  --grid-pagination-bg: #2d3e3a;
+  /* Dark teal pagination */
+  --grid-pagination-text: #8a9a8e;
+  /* Muted sage text */
+  --grid-pagination-button-hover: #3a4f48;
+  /* Teal hover */
+
+  /* ===== General UI Colors ===== */
+  --ui-bg-primary: #232f2c;
+  /* Very dark teal primary */
+  --ui-bg-secondary: #2d3e3a;
+  /* Dark teal secondary */
+  --ui-border: #3a4f48;
+  /* Teal borders */
+  --ui-text-primary: #f0f2f0;
+  /* Almost white with green tint */
+  --ui-text-secondary: #d4d9d4;
+  /* Light grayish-green */
+  --ui-text-muted: #8a9a8e;
+  /* Muted sage */
+  --ui-error-bg: rgba(139, 69, 61, 0.4);
+  /* Muted reddish-brown error */
+  --ui-error-text: #e8b4ae;
+  /* Light peachy-red */
+  --ui-error-border: #8b453d;
+  /* Reddish-brown border */
+  --ui-resize-handle: #7fb5a0;
+  /* Soft teal handle */
+  --ui-spinner: #7fb5a0;
+  /* Soft teal spinner */
+
+  /* ===== Menu Bar Colors ===== */
+  --menu-bg: #2d3e3a;
+  /* Dark teal background */
+  --menu-text: #d4d9d4;
+  /* Light grayish-green text */
+  --menu-border: #3a4f48;
+  /* Teal border */
+  --menu-hover-bg: #3a4f48;
+  /* Teal hover */
+  --menu-hover-text: #f0f2f0;
+  /* Almost white hover text */
+  --menu-dropdown-bg: #2d3e3a;
+  /* Dark teal dropdown */
+  --menu-dropdown-border: #3a4f48;
+  /* Teal border */
+
+  /* ===== Status Footer Colors ===== */
+  --footer-bg: #2d3e3a;
+  /* Dark teal background */
+  --footer-text: #8a9a8e;
+  /* Muted sage text */
+  --footer-border: #3a4f48;
+  /* Teal border */
+  --footer-item-bg: #3a4f48;
+  /* Teal item background */
+  --footer-item-text: #d4d9d4;
+  /* Light grayish-green text */
+  --footer-item-hover: #4a5f58;
+  /* Lighter teal hover */
+
+  /* ===== Modal Colors ===== */
+  --modal-overlay: rgba(35, 47, 44, 0.7);
+  /* Dark teal overlay */
+  --modal-bg: #2d3e3a;
+  /* Dark teal modal */
+  --modal-border: #3a4f48;
+  /* Teal border */
+  --modal-text: #f0f2f0;
+  /* Almost white text */
+  --modal-text-secondary: #d4d9d4;
+  /* Light grayish-green */
+  --modal-text-muted: #8a9a8e;
+  /* Muted sage */
+  --modal-input-bg: #232f2c;
+  /* Very dark teal input */
+  --modal-input-border: #4a5f58;
+  /* Lighter teal border */
+  --modal-input-text: #f0f2f0;
+  /* Almost white input text */
+  --modal-button-primary-bg: #5f8778;
+  /* Muted teal button */
+  --modal-button-primary-hover: #4a6b5e;
+  /* Darker teal hover */
+  --modal-button-secondary-bg: #4a5550;
+  /* Gray-green secondary */
+  --modal-button-secondary-hover: #5a6660;
+  /* Lighter gray-green hover */
+  --modal-button-text: #ffffff;
+  /* White primary button text */
+  --modal-button-secondary-text: #d4d9d4;
+  /* Light secondary button text */
+  --modal-link: #a8d5ba;
+  /* Light mint link */
+  --modal-link-hover: #c0e5ce;
+  /* Very light mint hover */
 }
 
 /* Optional: Add theme variants by overriding variables */
