@@ -1,601 +1,145 @@
-2025-11-28 12:20:09.401 [main] INFO  c.q.backend.BackendApplication - Starting BackendApplication using Java 21.0.9 with PID 860716 (/home/petruz/git-repo/query-mole/backend/build/classes/java/main started by petruz in /home/petruz/git-repo/query-mole/backend)
-2025-11-28 12:20:09.403 [main] DEBUG c.q.backend.BackendApplication - Running with Spring Boot v4.0.0, Spring v7.0.1
-2025-11-28 12:20:09.404 [main] INFO  c.q.backend.BackendApplication - No active profile set, falling back to 1 default profile: "default"
-2025-11-28 12:20:10.691 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2025-11-28 12:20:10.705 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
-2025-11-28 12:20:10.708 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2025-11-28 12:20:10.708 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.14]
-2025-11-28 12:20:10.757 [main] INFO  o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 1297 ms
-2025-11-28 12:20:10.945 [main] INFO  o.s.b.w.a.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
-2025-11-28 12:20:11.222 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
-2025-11-28 12:20:11.241 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
-2025-11-28 12:20:11.251 [main] INFO  c.q.backend.BackendApplication - Started BackendApplication in 2.538 seconds (process running for 2.999)
-2025-11-28 12:22:14.760 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-11-28 12:22:14.760 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-2025-11-28 12:22:14.762 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
-2025-11-28 12:22:14.895 [http-nio-8080-exec-1] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:postgresql://localhost:5432/postgres
-2025-11-28 12:22:14.896 [http-nio-8080-exec-1] DEBUG o.s.j.d.DriverManagerDataSource - Loaded JDBC driver: org.postgresql.Driver
-2025-11-28 12:22:14.897 [http-nio-8080-exec-1] INFO  c.q.b.c.ConnectionController - Successfully connected to database
-2025-11-28 12:25:05.630 [http-nio-8080-exec-2] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
-2025-11-28 12:25:05.640 [http-nio-8080-exec-2] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
-2025-11-28 12:25:05.642 [http-nio-8080-exec-2] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.8.6.jar
-2025-11-28 12:25:05.652 [http-nio-8080-exec-2] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.8.6.jar
-2025-11-28 12:25:05.652 [http-nio-8080-exec-2] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
-2025-11-28 12:25:05.657 [http-nio-8080-exec-2] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
-2025-11-28 12:25:05.658 [http-nio-8080-exec-2] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
-2025-11-28 12:25:36.578 [http-nio-8080-exec-3] INFO  c.q.b.c.ConnectionController - Testing connection to: jdbc:clickhouse://localhost:8124/default
-2025-11-28 12:25:36.579 [http-nio-8080-exec-3] DEBUG c.q.b.c.ConnectionController - Using custom driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 12:25:36.580 [http-nio-8080-exec-3] DEBUG c.q.b.service.DriverLoaderService - Loading driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 12:25:36.585 [http-nio-8080-exec-3] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.8.6.jar
-2025-11-28 12:25:36.587 [http-nio-8080-exec-3] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
-2025-11-28 12:25:36.594 [http-nio-8080-exec-3] INFO  c.clickhouse.jdbc.ClickHouseDriver - ClickHouse JDBC driver version: clickhouse-jdbc 0.8.6 (revision: 2d305b7)
-2025-11-28 12:25:36.598 [http-nio-8080-exec-3] INFO  c.clickhouse.jdbc.ClickHouseDriver - v2 driver
-2025-11-28 12:25:36.612 [http-nio-8080-exec-3] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Handler dispatch failed: java.lang.NoClassDefFoundError: com/clickhouse/jdbc/Driver] with root cause
-java.lang.ClassNotFoundException: com.clickhouse.jdbc.Driver
-	at java.base/java.net.URLClassLoader.findClass(URLClassLoader.java:445)
-	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:593)
-	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:526)
-	at com.clickhouse.jdbc.ClickHouseDriver.getDriver(ClickHouseDriver.java:85)
-	at com.clickhouse.jdbc.ClickHouseDriver.<init>(ClickHouseDriver.java:26)
-	at com.clickhouse.jdbc.ClickHouseDriver.load(ClickHouseDriver.java:32)
-	at com.clickhouse.jdbc.ClickHouseDriver.<clinit>(ClickHouseDriver.java:19)
-	at java.base/java.lang.Class.forName0(Native Method)
-	at java.base/java.lang.Class.forName(Class.java:536)
-	at java.base/java.lang.Class.forName(Class.java:515)
-	at com.querymole.backend.service.DriverLoaderService.getDriver(DriverLoaderService.java:187)
-	at com.querymole.backend.controller.ConnectionController.test(ConnectionController.java:76)
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258)
-	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:190)
-	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:934)
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:853)
-	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:86)
-	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:963)
-	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:866)
-	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1003)
-	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:903)
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:649)
-	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:874)
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:710)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:128)
-	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:199)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165)
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:77)
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113)
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83)
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72)
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341)
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397)
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1778)
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:946)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:480)
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:57)
-	at java.base/java.lang.Thread.run(Thread.java:1583)
-2025-11-28 12:28:46.113 [http-nio-8080-exec-4] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:postgresql://localhost:5432/postgres
-2025-11-28 12:28:46.115 [http-nio-8080-exec-4] DEBUG o.s.j.d.DriverManagerDataSource - Loaded JDBC driver: org.postgresql.Driver
-2025-11-28 12:28:46.115 [http-nio-8080-exec-4] INFO  c.q.b.c.ConnectionController - Successfully connected to database
-2025-11-28 12:28:49.764 [http-nio-8080-exec-5] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
-2025-11-28 12:28:49.765 [http-nio-8080-exec-5] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
-2025-11-28 12:28:49.766 [http-nio-8080-exec-5] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.8.6.jar
-2025-11-28 12:28:49.770 [http-nio-8080-exec-5] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.8.6.jar
-2025-11-28 12:28:49.771 [http-nio-8080-exec-5] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
-2025-11-28 12:28:49.773 [http-nio-8080-exec-5] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
-2025-11-28 12:28:49.773 [http-nio-8080-exec-5] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
-2025-11-28 12:29:11.022 [http-nio-8080-exec-6] INFO  c.q.b.c.ConnectionController - Testing connection to: jdbc:clickhouse://localhost:8124/default
-2025-11-28 12:29:11.023 [http-nio-8080-exec-6] DEBUG c.q.b.c.ConnectionController - Using custom driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 12:29:11.023 [http-nio-8080-exec-6] DEBUG c.q.b.service.DriverLoaderService - Loading driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 12:29:11.024 [http-nio-8080-exec-6] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.8.6.jar
-2025-11-28 12:29:11.025 [http-nio-8080-exec-6] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
-2025-11-28 12:29:11.034 [http-nio-8080-exec-6] INFO  c.clickhouse.jdbc.ClickHouseDriver - ClickHouse JDBC driver version: clickhouse-jdbc 0.8.6 (revision: 2d305b7)
-2025-11-28 12:29:11.034 [http-nio-8080-exec-6] INFO  c.clickhouse.jdbc.ClickHouseDriver - v2 driver
-2025-11-28 12:29:11.036 [http-nio-8080-exec-6] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Handler dispatch failed: java.lang.NoClassDefFoundError: com/clickhouse/jdbc/Driver] with root cause
-java.lang.ClassNotFoundException: com.clickhouse.jdbc.Driver
-	at java.base/java.net.URLClassLoader.findClass(URLClassLoader.java:445)
-	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:593)
-	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:526)
-	at com.clickhouse.jdbc.ClickHouseDriver.getDriver(ClickHouseDriver.java:85)
-	at com.clickhouse.jdbc.ClickHouseDriver.<init>(ClickHouseDriver.java:26)
-	at com.clickhouse.jdbc.ClickHouseDriver.load(ClickHouseDriver.java:32)
-	at com.clickhouse.jdbc.ClickHouseDriver.<clinit>(ClickHouseDriver.java:19)
-	at java.base/java.lang.Class.forName0(Native Method)
-	at java.base/java.lang.Class.forName(Class.java:536)
-	at java.base/java.lang.Class.forName(Class.java:515)
-	at com.querymole.backend.service.DriverLoaderService.getDriver(DriverLoaderService.java:187)
-	at com.querymole.backend.controller.ConnectionController.test(ConnectionController.java:76)
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258)
-	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:190)
-	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:934)
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:853)
-	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:86)
-	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:963)
-	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:866)
-	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1003)
-	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:903)
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:649)
-	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:874)
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:710)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:128)
-	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:199)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165)
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:77)
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113)
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83)
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72)
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341)
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397)
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1778)
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:946)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:480)
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:57)
-	at java.base/java.lang.Thread.run(Thread.java:1583)
-2025-11-28 12:29:24.468 [SpringApplicationShutdownHook] INFO  o.s.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
-2025-11-28 12:29:24.478 [tomcat-shutdown] INFO  o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete
-2025-11-28 12:29:29.739 [main] INFO  c.q.backend.BackendApplication - Starting BackendApplication using Java 21.0.9 with PID 863521 (/home/petruz/git-repo/query-mole/backend/build/classes/java/main started by petruz in /home/petruz/git-repo/query-mole/backend)
-2025-11-28 12:29:29.742 [main] DEBUG c.q.backend.BackendApplication - Running with Spring Boot v4.0.0, Spring v7.0.1
-2025-11-28 12:29:29.742 [main] INFO  c.q.backend.BackendApplication - No active profile set, falling back to 1 default profile: "default"
-2025-11-28 12:29:30.997 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2025-11-28 12:29:31.017 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
-2025-11-28 12:29:31.020 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2025-11-28 12:29:31.021 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.14]
-2025-11-28 12:29:31.083 [main] INFO  o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 1287 ms
-2025-11-28 12:29:31.318 [main] INFO  o.s.b.w.a.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
-2025-11-28 12:29:31.574 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
-2025-11-28 12:29:31.590 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
-2025-11-28 12:29:31.596 [main] INFO  c.q.backend.BackendApplication - Started BackendApplication in 2.46 seconds (process running for 2.874)
-2025-11-28 12:29:58.429 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-11-28 12:29:58.430 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-2025-11-28 12:29:58.431 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
-2025-11-28 12:29:58.541 [http-nio-8080-exec-1] INFO  c.q.b.c.ConnectionController - Testing connection to: jdbc:clickhouse://localhost:8124/default
-2025-11-28 12:29:58.541 [http-nio-8080-exec-1] DEBUG c.q.b.c.ConnectionController - Using custom driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 12:29:58.541 [http-nio-8080-exec-1] DEBUG c.q.b.service.DriverLoaderService - Loading driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 12:29:58.542 [http-nio-8080-exec-1] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.8.6.jar
-2025-11-28 12:29:58.543 [http-nio-8080-exec-1] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
-2025-11-28 12:29:58.545 [http-nio-8080-exec-1] INFO  c.clickhouse.jdbc.ClickHouseDriver - ClickHouse JDBC driver version: clickhouse-jdbc 0.8.6 (revision: 2d305b7)
-2025-11-28 12:29:58.546 [http-nio-8080-exec-1] INFO  c.clickhouse.jdbc.ClickHouseDriver - v2 driver
-2025-11-28 12:29:58.552 [http-nio-8080-exec-1] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Handler dispatch failed: java.lang.NoClassDefFoundError: com/clickhouse/jdbc/Driver] with root cause
-java.lang.ClassNotFoundException: com.clickhouse.jdbc.Driver
-	at java.base/java.net.URLClassLoader.findClass(URLClassLoader.java:445)
-	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:593)
-	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:526)
-	at com.clickhouse.jdbc.ClickHouseDriver.getDriver(ClickHouseDriver.java:85)
-	at com.clickhouse.jdbc.ClickHouseDriver.<init>(ClickHouseDriver.java:26)
-	at com.clickhouse.jdbc.ClickHouseDriver.load(ClickHouseDriver.java:32)
-	at com.clickhouse.jdbc.ClickHouseDriver.<clinit>(ClickHouseDriver.java:19)
-	at java.base/java.lang.Class.forName0(Native Method)
-	at java.base/java.lang.Class.forName(Class.java:536)
-	at java.base/java.lang.Class.forName(Class.java:515)
-	at com.querymole.backend.service.DriverLoaderService.getDriver(DriverLoaderService.java:192)
-	at com.querymole.backend.controller.ConnectionController.test(ConnectionController.java:76)
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258)
-	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:190)
-	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:934)
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:853)
-	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:86)
-	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:963)
-	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:866)
-	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1003)
-	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:903)
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:649)
-	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:874)
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:710)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:128)
-	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:199)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165)
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:77)
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113)
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83)
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72)
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341)
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397)
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1778)
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:946)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:480)
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:57)
-	at java.base/java.lang.Thread.run(Thread.java:1583)
-2025-11-28 12:31:23.988 [http-nio-8080-exec-2] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:postgresql://localhost:5432/postgres
-2025-11-28 12:31:23.992 [http-nio-8080-exec-2] DEBUG o.s.j.d.DriverManagerDataSource - Loaded JDBC driver: org.postgresql.Driver
-2025-11-28 12:31:23.993 [http-nio-8080-exec-2] INFO  c.q.b.c.ConnectionController - Successfully connected to database
-2025-11-28 12:42:40.388 [SpringApplicationShutdownHook] INFO  o.s.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
-2025-11-28 12:42:40.415 [tomcat-shutdown] INFO  o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete
-2025-11-28 12:42:47.506 [main] INFO  c.q.backend.BackendApplication - Starting BackendApplication using Java 21.0.9 with PID 868465 (/home/petruz/git-repo/query-mole/backend/build/classes/java/main started by petruz in /home/petruz/git-repo/query-mole/backend)
-2025-11-28 12:42:47.518 [main] DEBUG c.q.backend.BackendApplication - Running with Spring Boot v4.0.0, Spring v7.0.1
-2025-11-28 12:42:47.521 [main] INFO  c.q.backend.BackendApplication - No active profile set, falling back to 1 default profile: "default"
-2025-11-28 12:42:49.673 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2025-11-28 12:42:49.697 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
-2025-11-28 12:42:49.702 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2025-11-28 12:42:49.702 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.14]
-2025-11-28 12:42:49.795 [main] INFO  o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 2161 ms
-2025-11-28 12:42:50.086 [main] INFO  o.s.b.w.a.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
-2025-11-28 12:42:50.484 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
-2025-11-28 12:42:50.512 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
-2025-11-28 12:42:50.522 [main] INFO  c.q.backend.BackendApplication - Started BackendApplication in 4.145 seconds (process running for 5.181)
-2025-11-28 12:42:55.397 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-11-28 12:42:55.398 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-2025-11-28 12:42:55.401 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
-2025-11-28 12:42:55.640 [http-nio-8080-exec-1] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:postgresql://localhost:5432/postgres
-2025-11-28 12:42:55.642 [http-nio-8080-exec-1] DEBUG o.s.j.d.DriverManagerDataSource - Loaded JDBC driver: org.postgresql.Driver
-2025-11-28 12:42:55.642 [http-nio-8080-exec-1] INFO  c.q.b.c.ConnectionController - Successfully connected to database
-2025-11-28 12:42:58.089 [http-nio-8080-exec-2] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
-2025-11-28 12:42:58.091 [http-nio-8080-exec-2] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
-2025-11-28 12:42:58.091 [http-nio-8080-exec-2] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 12:42:58.100 [http-nio-8080-exec-2] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 12:42:58.101 [http-nio-8080-exec-2] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
-2025-11-28 12:42:58.104 [http-nio-8080-exec-2] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
-2025-11-28 12:42:58.105 [http-nio-8080-exec-2] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
-2025-11-28 12:43:20.798 [http-nio-8080-exec-3] INFO  c.q.b.c.ConnectionController - Testing connection to: jdbc:clickhouse://localhost:8124/default
-2025-11-28 12:43:20.798 [http-nio-8080-exec-3] DEBUG c.q.b.c.ConnectionController - Using custom driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 12:43:20.798 [http-nio-8080-exec-3] DEBUG c.q.b.service.DriverLoaderService - Loading driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 12:43:20.799 [http-nio-8080-exec-3] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 12:43:20.799 [http-nio-8080-exec-3] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
-2025-11-28 12:43:20.927 [http-nio-8080-exec-3] INFO  c.q.b.service.DriverLoaderService - Successfully loaded driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 12:43:21.595 [http-nio-8080-exec-3] INFO  c.q.b.c.ConnectionController - Connection test successful for: jdbc:clickhouse://localhost:8124/default
-2025-11-28 12:43:24.969 [http-nio-8080-exec-4] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:clickhouse://localhost:8124/default
-2025-11-28 12:43:24.969 [http-nio-8080-exec-4] DEBUG c.q.b.service.DriverLoaderService - Loading driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 12:43:24.970 [http-nio-8080-exec-4] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 12:43:24.970 [http-nio-8080-exec-4] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
-2025-11-28 12:43:25.001 [http-nio-8080-exec-4] INFO  c.q.b.service.DriverLoaderService - Successfully loaded driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 12:43:25.002 [http-nio-8080-exec-4] INFO  c.q.b.c.ConnectionController - Successfully connected to database
-2025-11-28 12:43:43.106 [SpringApplicationShutdownHook] INFO  o.s.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
-2025-11-28 12:43:43.112 [tomcat-shutdown] INFO  o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete
-2025-11-28 12:55:45.757 [main] INFO  c.q.backend.BackendApplication - Starting BackendApplication using Java 21.0.9 with PID 871791 (/home/petruz/git-repo/query-mole/backend/build/classes/java/main started by petruz in /home/petruz/git-repo/query-mole/backend)
-2025-11-28 12:55:45.762 [main] DEBUG c.q.backend.BackendApplication - Running with Spring Boot v4.0.0, Spring v7.0.1
-2025-11-28 12:55:45.765 [main] INFO  c.q.backend.BackendApplication - No active profile set, falling back to 1 default profile: "default"
-2025-11-28 12:55:47.598 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2025-11-28 12:55:47.616 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
-2025-11-28 12:55:47.619 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2025-11-28 12:55:47.620 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.14]
-2025-11-28 12:55:47.683 [main] INFO  o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 1769 ms
-2025-11-28 12:55:47.930 [main] INFO  o.s.b.w.a.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
-2025-11-28 12:55:48.356 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
-2025-11-28 12:55:48.397 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
-2025-11-28 12:55:48.408 [main] INFO  c.q.backend.BackendApplication - Started BackendApplication in 3.638 seconds (process running for 4.228)
-2025-11-28 12:55:55.690 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-11-28 12:55:55.691 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-2025-11-28 12:55:55.693 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
-2025-11-28 12:55:56.120 [http-nio-8080-exec-1] DEBUG o.s.jdbc.core.JdbcTemplate - Executing SQL query [select * from system.clusters]
-2025-11-28 12:55:56.134 [http-nio-8080-exec-1] DEBUG o.s.jdbc.datasource.DataSourceUtils - Fetching JDBC Connection from DataSource
-2025-11-28 12:55:56.136 [http-nio-8080-exec-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2025-11-28 12:56:01.215 [http-nio-8080-exec-2] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:postgresql://localhost:5432/postgres
-2025-11-28 12:56:01.219 [http-nio-8080-exec-2] DEBUG o.s.j.d.DriverManagerDataSource - Loaded JDBC driver: org.postgresql.Driver
-2025-11-28 12:56:01.219 [http-nio-8080-exec-2] INFO  c.q.b.c.ConnectionController - Successfully connected to database
-2025-11-28 12:56:03.579 [http-nio-8080-exec-3] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:clickhouse://localhost:8124/default
-2025-11-28 12:56:03.580 [http-nio-8080-exec-3] DEBUG c.q.b.service.DriverLoaderService - Loading driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 12:56:03.582 [http-nio-8080-exec-3] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 12:56:03.583 [http-nio-8080-exec-3] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
-2025-11-28 12:56:03.635 [http-nio-8080-exec-3] INFO  c.q.b.service.DriverLoaderService - Successfully loaded driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 12:56:03.636 [http-nio-8080-exec-3] INFO  c.q.b.c.ConnectionController - Successfully connected to database
-2025-11-28 12:56:07.561 [http-nio-8080-exec-4] DEBUG o.s.jdbc.core.JdbcTemplate - Executing SQL query [select * from system.clusters]
-2025-11-28 12:56:07.562 [http-nio-8080-exec-4] DEBUG o.s.jdbc.datasource.DataSourceUtils - Fetching JDBC Connection from DataSource
-2025-11-28 12:56:07.563 [http-nio-8080-exec-4] DEBUG o.s.j.d.SimpleDriverDataSource - Creating new JDBC Driver Connection to [jdbc:clickhouse://localhost:8124/default]
-2025-11-28 14:25:37.074 [http-nio-8080-exec-5] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
-2025-11-28 14:25:37.076 [http-nio-8080-exec-5] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
-2025-11-28 14:25:37.077 [http-nio-8080-exec-5] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:25:37.085 [http-nio-8080-exec-5] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:25:37.086 [http-nio-8080-exec-5] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
-2025-11-28 14:25:37.088 [http-nio-8080-exec-5] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
-2025-11-28 14:25:37.089 [http-nio-8080-exec-5] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
-2025-11-28 14:26:14.180 [http-nio-8080-exec-6] DEBUG o.s.jdbc.core.JdbcTemplate - Executing SQL query [select * from system.clusters]
-2025-11-28 14:26:14.181 [http-nio-8080-exec-6] DEBUG o.s.jdbc.datasource.DataSourceUtils - Fetching JDBC Connection from DataSource
-2025-11-28 14:26:14.182 [http-nio-8080-exec-6] DEBUG o.s.j.d.SimpleDriverDataSource - Creating new JDBC Driver Connection to [jdbc:clickhouse://localhost:8124/default]
-2025-11-28 14:26:29.814 [http-nio-8080-exec-7] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
-2025-11-28 14:26:29.815 [http-nio-8080-exec-7] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
-2025-11-28 14:26:29.816 [http-nio-8080-exec-7] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:26:29.832 [http-nio-8080-exec-7] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:26:29.840 [http-nio-8080-exec-7] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
-2025-11-28 14:26:29.840 [http-nio-8080-exec-7] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
-2025-11-28 14:26:29.841 [http-nio-8080-exec-7] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
-2025-11-28 14:27:01.971 [http-nio-8080-exec-9] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
-2025-11-28 14:27:01.977 [http-nio-8080-exec-9] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
-2025-11-28 14:27:01.978 [http-nio-8080-exec-9] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:27:01.989 [http-nio-8080-exec-9] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:27:02.001 [http-nio-8080-exec-9] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
-2025-11-28 14:27:02.002 [http-nio-8080-exec-9] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
-2025-11-28 14:27:02.002 [http-nio-8080-exec-9] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
-2025-11-28 14:31:45.692 [http-nio-8080-exec-8] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:clickhouse://localhost:8124/default
-2025-11-28 14:31:45.694 [http-nio-8080-exec-8] DEBUG c.q.b.service.DriverLoaderService - Loading driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 14:31:45.701 [http-nio-8080-exec-8] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:31:45.702 [http-nio-8080-exec-8] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
-2025-11-28 14:31:45.790 [http-nio-8080-exec-8] INFO  c.q.b.service.DriverLoaderService - Successfully loaded driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 14:31:45.791 [http-nio-8080-exec-8] INFO  c.q.b.c.ConnectionController - Successfully connected to database
-2025-11-28 14:32:58.486 [http-nio-8080-exec-10] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:clickhouse://localhost:8124/default
-2025-11-28 14:32:58.487 [http-nio-8080-exec-10] DEBUG c.q.b.service.DriverLoaderService - Loading driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 14:32:58.488 [http-nio-8080-exec-10] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:32:58.488 [http-nio-8080-exec-10] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
-2025-11-28 14:32:58.560 [http-nio-8080-exec-10] INFO  c.q.b.service.DriverLoaderService - Successfully loaded driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 14:32:58.568 [http-nio-8080-exec-10] INFO  c.q.b.c.ConnectionController - Successfully connected to database
-2025-11-28 14:33:03.070 [http-nio-8080-exec-1] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
-2025-11-28 14:33:03.070 [http-nio-8080-exec-1] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
-2025-11-28 14:33:03.073 [http-nio-8080-exec-1] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:33:03.086 [http-nio-8080-exec-1] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:33:03.087 [http-nio-8080-exec-1] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
-2025-11-28 14:33:03.089 [http-nio-8080-exec-1] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
-2025-11-28 14:33:03.089 [http-nio-8080-exec-1] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
-2025-11-28 14:33:13.865 [http-nio-8080-exec-2] INFO  c.q.b.c.ConnectionController - Testing connection to: jdbc:postgresql://localhost:5432/postgres
-2025-11-28 14:33:13.865 [http-nio-8080-exec-2] DEBUG c.q.b.c.ConnectionController - Using custom driver: org.postgresql.Driver
-2025-11-28 14:33:13.866 [http-nio-8080-exec-2] DEBUG c.q.b.service.DriverLoaderService - Loading driver: org.postgresql.Driver
-2025-11-28 14:33:13.866 [http-nio-8080-exec-2] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:33:13.866 [http-nio-8080-exec-2] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
-2025-11-28 14:33:13.867 [http-nio-8080-exec-2] INFO  c.q.b.service.DriverLoaderService - Successfully loaded driver: org.postgresql.Driver
-2025-11-28 14:33:13.873 [http-nio-8080-exec-2] ERROR c.q.b.c.ConnectionController - Failed to load custom driver: org.postgresql.Driver
-org.postgresql.util.PSQLException: Connection to localhost:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
-	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
-	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
-	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:279)
-	at org.postgresql.Driver.makeConnection(Driver.java:448)
-	at org.postgresql.Driver.connect(Driver.java:298)
-	at com.querymole.backend.controller.ConnectionController.test(ConnectionController.java:81)
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258)
-	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:190)
-	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:934)
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:853)
-	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:86)
-	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:963)
-	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:866)
-	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1003)
-	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:903)
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:649)
-	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:874)
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:710)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:128)
-	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:199)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165)
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:77)
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113)
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83)
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72)
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341)
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397)
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1778)
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:946)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:480)
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:57)
-	at java.base/java.lang.Thread.run(Thread.java:1583)
-Caused by: java.net.ConnectException: Connection refused
-	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
-	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
-	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:542)
-	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
-	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
-	at java.base/java.net.Socket.connect(Socket.java:751)
-	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
-	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
-	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
-	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
-	... 48 common frames omitted
-2025-11-28 14:33:25.064 [http-nio-8080-exec-3] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
-2025-11-28 14:33:25.065 [http-nio-8080-exec-3] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
-2025-11-28 14:33:25.065 [http-nio-8080-exec-3] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:33:25.085 [http-nio-8080-exec-3] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:33:25.086 [http-nio-8080-exec-3] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
-2025-11-28 14:33:25.087 [http-nio-8080-exec-3] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
-2025-11-28 14:33:25.088 [http-nio-8080-exec-3] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
-2025-11-28 14:37:17.942 [http-nio-8080-exec-4] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
-2025-11-28 14:37:17.944 [http-nio-8080-exec-4] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
-2025-11-28 14:37:17.946 [http-nio-8080-exec-4] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:37:17.958 [http-nio-8080-exec-4] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:37:17.960 [http-nio-8080-exec-4] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
-2025-11-28 14:37:17.961 [http-nio-8080-exec-4] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
-2025-11-28 14:37:17.961 [http-nio-8080-exec-4] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
-2025-11-28 14:38:03.499 [http-nio-8080-exec-5] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
-2025-11-28 14:38:03.500 [http-nio-8080-exec-5] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
-2025-11-28 14:38:03.501 [http-nio-8080-exec-5] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:38:03.524 [http-nio-8080-exec-5] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:38:03.528 [http-nio-8080-exec-5] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
-2025-11-28 14:38:03.533 [http-nio-8080-exec-5] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
-2025-11-28 14:38:03.533 [http-nio-8080-exec-5] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
-2025-11-28 14:40:31.198 [http-nio-8080-exec-6] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
-2025-11-28 14:40:31.202 [http-nio-8080-exec-6] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
-2025-11-28 14:40:31.204 [http-nio-8080-exec-6] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:40:31.229 [http-nio-8080-exec-6] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:40:31.232 [http-nio-8080-exec-6] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
-2025-11-28 14:40:31.235 [http-nio-8080-exec-6] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
-2025-11-28 14:40:31.242 [http-nio-8080-exec-6] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
-2025-11-28 14:41:13.418 [http-nio-8080-exec-7] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:clickhouse://localhost:8124/default
-2025-11-28 14:41:13.421 [http-nio-8080-exec-7] DEBUG c.q.b.service.DriverLoaderService - Loading driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 14:41:13.422 [http-nio-8080-exec-7] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:41:13.423 [http-nio-8080-exec-7] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
-2025-11-28 14:41:13.497 [http-nio-8080-exec-7] INFO  c.q.b.service.DriverLoaderService - Successfully loaded driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 14:41:13.497 [http-nio-8080-exec-7] INFO  c.q.b.c.ConnectionController - Successfully connected to database
-2025-11-28 14:41:17.342 [http-nio-8080-exec-9] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
-2025-11-28 14:41:17.343 [http-nio-8080-exec-9] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
-2025-11-28 14:41:17.343 [http-nio-8080-exec-9] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:41:17.366 [http-nio-8080-exec-9] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:41:17.366 [http-nio-8080-exec-9] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
-2025-11-28 14:41:17.367 [http-nio-8080-exec-9] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
-2025-11-28 14:41:17.367 [http-nio-8080-exec-9] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
-2025-11-28 14:41:35.271 [http-nio-8080-exec-8] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
-2025-11-28 14:41:35.271 [http-nio-8080-exec-8] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
-2025-11-28 14:41:35.272 [http-nio-8080-exec-8] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:41:35.282 [http-nio-8080-exec-8] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:41:35.282 [http-nio-8080-exec-8] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
-2025-11-28 14:41:35.284 [http-nio-8080-exec-8] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
-2025-11-28 14:41:35.284 [http-nio-8080-exec-8] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
-2025-11-28 14:41:58.852 [http-nio-8080-exec-10] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
-2025-11-28 14:41:58.852 [http-nio-8080-exec-10] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
-2025-11-28 14:41:58.852 [http-nio-8080-exec-10] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:41:58.864 [http-nio-8080-exec-10] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:41:58.864 [http-nio-8080-exec-10] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
-2025-11-28 14:41:58.866 [http-nio-8080-exec-10] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
-2025-11-28 14:41:58.866 [http-nio-8080-exec-10] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
-2025-11-28 14:45:29.177 [http-nio-8080-exec-1] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:clickhouse://localhost:8124/default
-2025-11-28 14:45:29.178 [http-nio-8080-exec-1] DEBUG c.q.b.service.DriverLoaderService - Loading driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 14:45:29.181 [http-nio-8080-exec-1] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:45:29.181 [http-nio-8080-exec-1] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
-2025-11-28 14:45:29.404 [http-nio-8080-exec-1] INFO  c.q.b.service.DriverLoaderService - Successfully loaded driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 14:45:29.405 [http-nio-8080-exec-1] INFO  c.q.b.c.ConnectionController - Successfully connected to database
-2025-11-28 14:45:31.820 [http-nio-8080-exec-2] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
-2025-11-28 14:45:31.821 [http-nio-8080-exec-2] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
-2025-11-28 14:45:31.821 [http-nio-8080-exec-2] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:45:31.831 [http-nio-8080-exec-2] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:45:31.831 [http-nio-8080-exec-2] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
-2025-11-28 14:45:31.832 [http-nio-8080-exec-2] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
-2025-11-28 14:45:31.832 [http-nio-8080-exec-2] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
-2025-11-28 14:45:57.972 [http-nio-8080-exec-3] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
-2025-11-28 14:45:57.972 [http-nio-8080-exec-3] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
-2025-11-28 14:45:57.972 [http-nio-8080-exec-3] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:45:57.983 [http-nio-8080-exec-3] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:45:57.983 [http-nio-8080-exec-3] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
-2025-11-28 14:45:57.985 [http-nio-8080-exec-3] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
-2025-11-28 14:45:57.985 [http-nio-8080-exec-3] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
-2025-11-28 14:46:32.902 [http-nio-8080-exec-4] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
-2025-11-28 14:46:32.902 [http-nio-8080-exec-4] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
-2025-11-28 14:46:32.902 [http-nio-8080-exec-4] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:46:32.914 [http-nio-8080-exec-4] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:46:32.916 [http-nio-8080-exec-4] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
-2025-11-28 14:46:32.921 [http-nio-8080-exec-4] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
-2025-11-28 14:46:32.922 [http-nio-8080-exec-4] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
-2025-11-28 14:47:07.934 [SpringApplicationShutdownHook] INFO  o.s.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
-2025-11-28 14:47:07.965 [tomcat-shutdown] INFO  o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete
-2025-11-28 14:49:08.573 [main] INFO  c.q.backend.BackendApplication - Starting BackendApplication using Java 21.0.9 with PID 899708 (/home/petruz/git-repo/query-mole/backend/build/classes/java/main started by petruz in /home/petruz/git-repo/query-mole/backend)
-2025-11-28 14:49:08.577 [main] DEBUG c.q.backend.BackendApplication - Running with Spring Boot v4.0.0, Spring v7.0.1
-2025-11-28 14:49:08.579 [main] INFO  c.q.backend.BackendApplication - No active profile set, falling back to 1 default profile: "default"
-2025-11-28 14:49:10.194 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2025-11-28 14:49:10.225 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
-2025-11-28 14:49:10.230 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2025-11-28 14:49:10.231 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.14]
-2025-11-28 14:49:10.298 [main] INFO  o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 1621 ms
-2025-11-28 14:49:10.658 [main] INFO  o.s.b.w.a.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
-2025-11-28 14:49:11.253 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
-2025-11-28 14:49:11.279 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
-2025-11-28 14:49:11.287 [main] INFO  c.q.backend.BackendApplication - Started BackendApplication in 3.593 seconds (process running for 4.799)
-2025-11-28 14:51:02.857 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-11-28 14:51:02.858 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-2025-11-28 14:51:02.861 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 3 ms
-2025-11-28 14:51:03.215 [http-nio-8080-exec-1] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:clickhouse://localhost:8124/default
-2025-11-28 14:51:03.216 [http-nio-8080-exec-1] DEBUG c.q.b.service.DriverLoaderService - Loading driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 14:51:03.217 [http-nio-8080-exec-1] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:51:03.218 [http-nio-8080-exec-1] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
-2025-11-28 14:51:03.286 [http-nio-8080-exec-1] INFO  c.q.b.service.DriverLoaderService - Successfully loaded driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 14:51:03.287 [http-nio-8080-exec-1] INFO  c.q.b.c.ConnectionController - Successfully connected to database
-2025-11-28 14:51:10.110 [http-nio-8080-exec-2] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
-2025-11-28 14:51:10.110 [http-nio-8080-exec-2] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
-2025-11-28 14:51:10.111 [http-nio-8080-exec-2] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:51:10.121 [http-nio-8080-exec-2] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:51:10.121 [http-nio-8080-exec-2] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
-2025-11-28 14:51:10.123 [http-nio-8080-exec-2] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
-2025-11-28 14:51:10.123 [http-nio-8080-exec-2] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
-2025-11-28 14:52:52.828 [http-nio-8080-exec-3] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:clickhouse://localhost:8124/default
-2025-11-28 14:52:52.832 [http-nio-8080-exec-3] DEBUG c.q.b.service.DriverLoaderService - Loading driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 14:52:52.832 [http-nio-8080-exec-3] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:52:52.832 [http-nio-8080-exec-3] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
-2025-11-28 14:52:53.104 [http-nio-8080-exec-3] INFO  c.q.b.service.DriverLoaderService - Successfully loaded driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 14:52:53.105 [http-nio-8080-exec-3] INFO  c.q.b.c.ConnectionController - Successfully connected to database
-2025-11-28 14:53:01.095 [http-nio-8080-exec-4] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
-2025-11-28 14:53:01.112 [http-nio-8080-exec-4] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
-2025-11-28 14:53:01.118 [http-nio-8080-exec-4] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:53:01.186 [http-nio-8080-exec-4] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:53:01.192 [http-nio-8080-exec-4] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
-2025-11-28 14:53:01.203 [http-nio-8080-exec-4] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
-2025-11-28 14:53:01.214 [http-nio-8080-exec-4] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
-2025-11-28 14:53:11.139 [http-nio-8080-exec-5] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
-2025-11-28 14:53:11.142 [http-nio-8080-exec-5] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
-2025-11-28 14:53:11.142 [http-nio-8080-exec-5] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:53:11.170 [http-nio-8080-exec-5] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:53:11.171 [http-nio-8080-exec-5] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
-2025-11-28 14:53:11.172 [http-nio-8080-exec-5] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
-2025-11-28 14:53:11.172 [http-nio-8080-exec-5] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
-2025-11-28 14:53:23.764 [http-nio-8080-exec-6] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:clickhouse://localhost:8124/default
-2025-11-28 14:53:23.764 [http-nio-8080-exec-6] DEBUG c.q.b.service.DriverLoaderService - Loading driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 14:53:23.766 [http-nio-8080-exec-6] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:53:23.767 [http-nio-8080-exec-6] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
-2025-11-28 14:53:23.830 [http-nio-8080-exec-6] INFO  c.q.b.service.DriverLoaderService - Successfully loaded driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 14:53:23.830 [http-nio-8080-exec-6] INFO  c.q.b.c.ConnectionController - Successfully connected to database
-2025-11-28 14:53:27.661 [http-nio-8080-exec-7] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
-2025-11-28 14:53:27.665 [http-nio-8080-exec-7] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
-2025-11-28 14:53:27.666 [http-nio-8080-exec-7] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:53:27.671 [http-nio-8080-exec-7] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 14:53:27.672 [http-nio-8080-exec-7] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
-2025-11-28 14:53:27.672 [http-nio-8080-exec-7] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
-2025-11-28 14:53:27.672 [http-nio-8080-exec-7] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
-2025-11-28 14:53:35.657 [SpringApplicationShutdownHook] INFO  o.s.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
-2025-11-28 14:53:35.674 [tomcat-shutdown] INFO  o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete
-2025-11-28 15:05:39.474 [main] INFO  c.q.backend.BackendApplication - Starting BackendApplication using Java 21.0.9 with PID 905314 (/home/petruz/git-repo/query-mole/backend/build/classes/java/main started by petruz in /home/petruz/git-repo/query-mole/backend)
-2025-11-28 15:05:39.478 [main] DEBUG c.q.backend.BackendApplication - Running with Spring Boot v4.0.0, Spring v7.0.1
-2025-11-28 15:05:39.480 [main] INFO  c.q.backend.BackendApplication - No active profile set, falling back to 1 default profile: "default"
-2025-11-28 15:05:41.139 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2025-11-28 15:05:41.156 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
-2025-11-28 15:05:41.160 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2025-11-28 15:05:41.161 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.14]
-2025-11-28 15:05:41.214 [main] INFO  o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 1661 ms
-2025-11-28 15:05:41.520 [main] INFO  o.s.b.w.a.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
-2025-11-28 15:05:42.524 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
-2025-11-28 15:05:42.596 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
-2025-11-28 15:05:42.620 [main] INFO  c.q.backend.BackendApplication - Started BackendApplication in 3.936 seconds (process running for 4.524)
-2025-11-28 15:05:55.555 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-11-28 15:05:55.556 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-2025-11-28 15:05:55.558 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
-2025-11-28 15:05:56.024 [http-nio-8080-exec-1] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:clickhouse://localhost:8124/default
-2025-11-28 15:05:56.025 [http-nio-8080-exec-1] DEBUG c.q.b.service.DriverLoaderService - Loading driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 15:05:56.037 [http-nio-8080-exec-1] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.9.4-all.jar
-2025-11-28 15:05:56.038 [http-nio-8080-exec-1] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
-2025-11-28 15:05:56.172 [http-nio-8080-exec-1] INFO  c.q.b.service.DriverLoaderService - Successfully loaded driver: com.clickhouse.jdbc.ClickHouseDriver
-2025-11-28 15:05:56.181 [http-nio-8080-exec-1] INFO  c.q.b.c.ConnectionController - Successfully connected to database
-2025-11-28 16:16:23.485 [SpringApplicationShutdownHook] INFO  o.s.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
-2025-11-28 16:16:23.999 [tomcat-shutdown] INFO  o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-12-01 10:04:08.612 [main] INFO  c.q.backend.BackendApplication - Starting BackendApplication using Java 21.0.9 with PID 2105219 (/home/petruz/git-repo/query-mole/backend/build/classes/java/main started by petruz in /home/petruz/git-repo/query-mole/backend)
+2025-12-01 10:04:08.632 [main] DEBUG c.q.backend.BackendApplication - Running with Spring Boot v4.0.0, Spring v7.0.1
+2025-12-01 10:04:08.640 [main] INFO  c.q.backend.BackendApplication - No active profile set, falling back to 1 default profile: "default"
+2025-12-01 10:04:12.107 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-12-01 10:04:12.131 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-12-01 10:04:12.138 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-12-01 10:04:12.138 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.14]
+2025-12-01 10:04:12.230 [main] INFO  o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 3364 ms
+2025-12-01 10:04:12.944 [main] INFO  o.s.b.w.a.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2025-12-01 10:04:14.207 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-12-01 10:04:14.318 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2025-12-01 10:04:14.338 [main] INFO  c.q.backend.BackendApplication - Started BackendApplication in 7.731 seconds (process running for 8.61)
+2025-12-01 10:04:45.641 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-12-01 10:04:45.642 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-12-01 10:04:45.649 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 6 ms
+2025-12-01 10:04:45.893 [http-nio-8080-exec-1] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:clickhouse://localhost:8124/default
+2025-12-01 10:04:45.895 [http-nio-8080-exec-1] DEBUG c.q.b.service.DriverLoaderService - Loading driver: com.clickhouse.jdbc.ClickHouseDriver
+2025-12-01 10:04:45.897 [http-nio-8080-exec-1] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.9.4-all.jar
+2025-12-01 10:04:45.899 [http-nio-8080-exec-1] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
+2025-12-01 10:04:45.973 [http-nio-8080-exec-1] INFO  c.q.b.service.DriverLoaderService - Successfully loaded driver: com.clickhouse.jdbc.ClickHouseDriver
+2025-12-01 10:04:45.978 [http-nio-8080-exec-1] INFO  c.q.b.c.ConnectionController - Successfully connected to database
+2025-12-01 10:14:30.923 [http-nio-8080-exec-2] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:clickhouse://localhost:8124/default
+2025-12-01 10:14:30.924 [http-nio-8080-exec-2] DEBUG c.q.b.service.DriverLoaderService - Loading driver: com.clickhouse.jdbc.ClickHouseDriver
+2025-12-01 10:14:30.925 [http-nio-8080-exec-2] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.9.4-all.jar
+2025-12-01 10:14:30.925 [http-nio-8080-exec-2] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
+2025-12-01 10:14:30.938 [http-nio-8080-exec-3] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:clickhouse://localhost:8124/default
+2025-12-01 10:14:30.938 [http-nio-8080-exec-3] DEBUG c.q.b.service.DriverLoaderService - Loading driver: com.clickhouse.jdbc.ClickHouseDriver
+2025-12-01 10:14:30.939 [http-nio-8080-exec-3] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.9.4-all.jar
+2025-12-01 10:14:30.941 [http-nio-8080-exec-3] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
+2025-12-01 10:14:30.957 [http-nio-8080-exec-2] INFO  c.q.b.service.DriverLoaderService - Successfully loaded driver: com.clickhouse.jdbc.ClickHouseDriver
+2025-12-01 10:14:30.958 [http-nio-8080-exec-2] INFO  c.q.b.c.ConnectionController - Successfully connected to database
+2025-12-01 10:14:30.961 [http-nio-8080-exec-3] INFO  c.q.b.service.DriverLoaderService - Successfully loaded driver: com.clickhouse.jdbc.ClickHouseDriver
+2025-12-01 10:14:30.962 [http-nio-8080-exec-3] INFO  c.q.b.c.ConnectionController - Successfully connected to database
+2025-12-01 10:20:51.885 [http-nio-8080-exec-4] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:clickhouse://localhost:8124/default
+2025-12-01 10:20:51.885 [http-nio-8080-exec-4] DEBUG c.q.b.service.DriverLoaderService - Loading driver: com.clickhouse.jdbc.ClickHouseDriver
+2025-12-01 10:20:51.885 [http-nio-8080-exec-4] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.9.4-all.jar
+2025-12-01 10:20:51.886 [http-nio-8080-exec-4] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
+2025-12-01 10:20:51.915 [http-nio-8080-exec-4] INFO  c.q.b.service.DriverLoaderService - Successfully loaded driver: com.clickhouse.jdbc.ClickHouseDriver
+2025-12-01 10:20:51.915 [http-nio-8080-exec-4] INFO  c.q.b.c.ConnectionController - Successfully connected to database
+2025-12-01 11:07:00.862 [http-nio-8080-exec-5] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:clickhouse://localhost:8124/default
+2025-12-01 11:07:00.938 [http-nio-8080-exec-5] DEBUG c.q.b.service.DriverLoaderService - Loading driver: com.clickhouse.jdbc.ClickHouseDriver
+2025-12-01 11:07:00.957 [http-nio-8080-exec-5] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.9.4-all.jar
+2025-12-01 11:07:00.959 [http-nio-8080-exec-5] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
+2025-12-01 11:07:02.133 [http-nio-8080-exec-5] INFO  c.q.b.service.DriverLoaderService - Successfully loaded driver: com.clickhouse.jdbc.ClickHouseDriver
+2025-12-01 11:07:02.139 [http-nio-8080-exec-5] INFO  c.q.b.c.ConnectionController - Successfully connected to database
+2025-12-01 11:11:31.205 [http-nio-8080-exec-6] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:clickhouse://localhost:8124/default
+2025-12-01 11:11:31.211 [http-nio-8080-exec-6] DEBUG c.q.b.service.DriverLoaderService - Loading driver: com.clickhouse.jdbc.ClickHouseDriver
+2025-12-01 11:11:31.212 [http-nio-8080-exec-6] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: clickhouse-jdbc-0.9.4-all.jar
+2025-12-01 11:11:31.212 [http-nio-8080-exec-6] DEBUG c.q.b.service.DriverLoaderService - Adding JAR to classpath: postgresql-42.7.8.jar
+2025-12-01 11:11:31.486 [http-nio-8080-exec-6] INFO  c.q.b.service.DriverLoaderService - Successfully loaded driver: com.clickhouse.jdbc.ClickHouseDriver
+2025-12-01 11:11:31.494 [http-nio-8080-exec-6] INFO  c.q.b.c.ConnectionController - Successfully connected to database
+2025-12-01 11:15:02.232 [http-nio-8080-exec-8] INFO  c.q.b.c.ConnectionController - Fetching available JDBC drivers
+2025-12-01 11:15:02.258 [http-nio-8080-exec-8] INFO  c.q.b.service.DriverLoaderService - Scanning 2 JAR files in drivers directory
+2025-12-01 11:15:02.259 [http-nio-8080-exec-8] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: clickhouse-jdbc-0.9.4-all.jar
+2025-12-01 11:15:02.396 [http-nio-8080-exec-8] INFO  c.q.b.service.DriverLoaderService - Detected driver: com.clickhouse.jdbc.ClickHouseDriver (clickhouse) in clickhouse-jdbc-0.9.4-all.jar
+2025-12-01 11:15:02.398 [http-nio-8080-exec-8] DEBUG c.q.b.service.DriverLoaderService - Scanning JAR: postgresql-42.7.8.jar
+2025-12-01 11:15:02.406 [http-nio-8080-exec-8] INFO  c.q.b.service.DriverLoaderService - Detected driver: org.postgresql.Driver (postgresql) in postgresql-42.7.8.jar
+2025-12-01 11:15:02.406 [http-nio-8080-exec-8] INFO  c.q.b.c.ConnectionController - Found 2 available drivers
+2025-12-01 11:16:27.465 [http-nio-8080-exec-7] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:postgresql://localhost:5432/postgres
+2025-12-01 11:16:27.486 [http-nio-8080-exec-7] DEBUG o.s.j.d.DriverManagerDataSource - Loaded JDBC driver: org.postgresql.Driver
+2025-12-01 11:16:27.488 [http-nio-8080-exec-7] INFO  c.q.b.c.ConnectionController - Successfully connected to database
+2025-12-01 11:16:32.201 [http-nio-8080-exec-9] DEBUG o.s.jdbc.core.JdbcTemplate - Executing SQL query [-- Top 10 tables 
+
+select schemaname as table_schema,
+    relname as table_name,
+    pg_size_pretty(pg_total_relation_size(relid)) as total_size,
+    pg_size_pretty(pg_relation_size(relid)) as data_size,
+    pg_size_pretty(pg_total_relation_size(relid) - pg_relation_size(relid))
+      as external_size
+from pg_catalog.pg_statio_user_tables
+order by pg_total_relation_size(relid) desc,
+         pg_relation_size(relid) desc
+limit 10;]
+2025-12-01 11:16:32.263 [http-nio-8080-exec-9] DEBUG o.s.jdbc.datasource.DataSourceUtils - Fetching JDBC Connection from DataSource
+2025-12-01 11:16:32.264 [http-nio-8080-exec-9] DEBUG o.s.j.d.DriverManagerDataSource - Creating new JDBC DriverManager Connection to [jdbc:postgresql://localhost:5432/postgres]
+2025-12-01 11:16:40.887 [http-nio-8080-exec-10] DEBUG o.s.jdbc.core.JdbcTemplate - Executing SQL query [SELECT pid, age(clock_timestamp(), query_start), usename, application_name, client_addr, state, query 
+  FROM pg_stat_activity 
+ WHERE state != 'idle'
+   AND query not like '%pg_stat_activity%']
+2025-12-01 11:16:40.891 [http-nio-8080-exec-10] DEBUG o.s.jdbc.datasource.DataSourceUtils - Fetching JDBC Connection from DataSource
+2025-12-01 11:16:40.891 [http-nio-8080-exec-10] DEBUG o.s.j.d.DriverManagerDataSource - Creating new JDBC DriverManager Connection to [jdbc:postgresql://localhost:5432/postgres]
+2025-12-01 11:16:47.063 [http-nio-8080-exec-1] DEBUG o.s.jdbc.core.JdbcTemplate - Executing SQL query [SELECT * FROM ...]
+2025-12-01 11:16:47.063 [http-nio-8080-exec-1] DEBUG o.s.jdbc.datasource.DataSourceUtils - Fetching JDBC Connection from DataSource
+2025-12-01 11:16:47.063 [http-nio-8080-exec-1] DEBUG o.s.j.d.DriverManagerDataSource - Creating new JDBC DriverManager Connection to [jdbc:postgresql://localhost:5432/postgres]
+2025-12-01 11:16:47.182 [http-nio-8080-exec-1] DEBUG o.s.j.s.SQLStateSQLExceptionTranslator - Extracted SQL state class '42' from value '42601'
+2025-12-01 11:16:53.326 [http-nio-8080-exec-2] DEBUG o.s.jdbc.core.JdbcTemplate - Executing SQL query [SELECT pid, age(clock_timestamp(), query_start), usename, application_name, client_addr, state, query 
+  FROM pg_stat_activity 
+ WHERE query not like '%pg_stat_activity%']
+2025-12-01 11:16:53.327 [http-nio-8080-exec-2] DEBUG o.s.jdbc.datasource.DataSourceUtils - Fetching JDBC Connection from DataSource
+2025-12-01 11:16:53.327 [http-nio-8080-exec-2] DEBUG o.s.j.d.DriverManagerDataSource - Creating new JDBC DriverManager Connection to [jdbc:postgresql://localhost:5432/postgres]
+2025-12-01 11:17:04.788 [http-nio-8080-exec-3] DEBUG o.s.jdbc.core.JdbcTemplate - Executing SQL query [SELECT pid, age(clock_timestamp(), query_start), usename, application_name, client_addr, state, query 
+  FROM pg_stat_activity 
+ WHERE query not like '%pg_stat_activity%']
+2025-12-01 11:17:04.790 [http-nio-8080-exec-3] DEBUG o.s.jdbc.datasource.DataSourceUtils - Fetching JDBC Connection from DataSource
+2025-12-01 11:17:04.790 [http-nio-8080-exec-3] DEBUG o.s.j.d.DriverManagerDataSource - Creating new JDBC DriverManager Connection to [jdbc:postgresql://localhost:5432/postgres]
+2025-12-01 13:58:18.182 [http-nio-8080-exec-4] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:postgresql://localhost:5432/postgres
+2025-12-01 13:58:18.250 [http-nio-8080-exec-4] DEBUG o.s.j.d.DriverManagerDataSource - Loaded JDBC driver: org.postgresql.Driver
+2025-12-01 13:58:18.257 [http-nio-8080-exec-4] INFO  c.q.b.c.ConnectionController - Successfully connected to database
+2025-12-01 13:58:25.404 [http-nio-8080-exec-5] DEBUG o.s.jdbc.core.JdbcTemplate - Executing SQL query [SELECT pid, age(clock_timestamp(), query_start), usename, application_name, client_addr, state, query 
+  FROM pg_stat_activity 
+ WHERE query not like '%pg_stat_activity%']
+2025-12-01 13:58:25.410 [http-nio-8080-exec-5] DEBUG o.s.jdbc.datasource.DataSourceUtils - Fetching JDBC Connection from DataSource
+2025-12-01 13:58:25.416 [http-nio-8080-exec-5] DEBUG o.s.j.d.DriverManagerDataSource - Creating new JDBC DriverManager Connection to [jdbc:postgresql://localhost:5432/postgres]
+2025-12-01 13:59:29.584 [http-nio-8080-exec-6] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:postgresql://localhost:5432/postgres
+2025-12-01 13:59:29.585 [http-nio-8080-exec-6] DEBUG o.s.j.d.DriverManagerDataSource - Loaded JDBC driver: org.postgresql.Driver
+2025-12-01 13:59:29.586 [http-nio-8080-exec-6] INFO  c.q.b.c.ConnectionController - Successfully connected to database
+2025-12-01 13:59:33.527 [http-nio-8080-exec-8] DEBUG o.s.jdbc.core.JdbcTemplate - Executing SQL query [SELECT pid, age(clock_timestamp(), query_start), usename, application_name, client_addr, state, query 
+  FROM pg_stat_activity 
+ WHERE query not like '%pg_stat_activity%']
+2025-12-01 13:59:33.529 [http-nio-8080-exec-8] DEBUG o.s.jdbc.datasource.DataSourceUtils - Fetching JDBC Connection from DataSource
+2025-12-01 13:59:33.530 [http-nio-8080-exec-8] DEBUG o.s.j.d.DriverManagerDataSource - Creating new JDBC DriverManager Connection to [jdbc:postgresql://localhost:5432/postgres]
+2025-12-01 14:00:57.472 [http-nio-8080-exec-7] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:postgresql://localhost:5432/postgres
+2025-12-01 14:00:57.478 [http-nio-8080-exec-7] DEBUG o.s.j.d.DriverManagerDataSource - Loaded JDBC driver: org.postgresql.Driver
+2025-12-01 14:00:57.479 [http-nio-8080-exec-7] INFO  c.q.b.c.ConnectionController - Successfully connected to database
+2025-12-01 14:01:01.539 [http-nio-8080-exec-9] DEBUG o.s.jdbc.core.JdbcTemplate - Executing SQL query [SELECT pid, age(clock_timestamp(), query_start), usename, application_name, client_addr, state, query 
+  FROM pg_stat_activity 
+ WHERE query not like '%pg_stat_activity%']
+2025-12-01 14:01:01.539 [http-nio-8080-exec-9] DEBUG o.s.jdbc.datasource.DataSourceUtils - Fetching JDBC Connection from DataSource
+2025-12-01 14:01:01.539 [http-nio-8080-exec-9] DEBUG o.s.j.d.DriverManagerDataSource - Creating new JDBC DriverManager Connection to [jdbc:postgresql://localhost:5432/postgres]
+2025-12-01 14:06:19.620 [http-nio-8080-exec-10] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:postgresql://localhost:5432/postgres
+2025-12-01 14:06:19.622 [http-nio-8080-exec-10] DEBUG o.s.j.d.DriverManagerDataSource - Loaded JDBC driver: org.postgresql.Driver
+2025-12-01 14:06:19.623 [http-nio-8080-exec-10] INFO  c.q.b.c.ConnectionController - Successfully connected to database
+2025-12-01 14:06:54.061 [http-nio-8080-exec-1] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:postgresql://localhost:5432/postgres
+2025-12-01 14:06:54.063 [http-nio-8080-exec-1] DEBUG o.s.j.d.DriverManagerDataSource - Loaded JDBC driver: org.postgresql.Driver
+2025-12-01 14:06:54.067 [http-nio-8080-exec-1] INFO  c.q.b.c.ConnectionController - Successfully connected to database
+2025-12-01 14:07:00.765 [http-nio-8080-exec-2] DEBUG o.s.jdbc.core.JdbcTemplate - Executing SQL query [SELECT pid, age(clock_timestamp(), query_start), usename, application_name, client_addr, state, query 
+  FROM pg_stat_activity 
+ WHERE query not like '%pg_stat_activity%']
+2025-12-01 14:07:00.766 [http-nio-8080-exec-2] DEBUG o.s.jdbc.datasource.DataSourceUtils - Fetching JDBC Connection from DataSource
+2025-12-01 14:07:00.767 [http-nio-8080-exec-2] DEBUG o.s.j.d.DriverManagerDataSource - Creating new JDBC DriverManager Connection to [jdbc:postgresql://localhost:5432/postgres]
+2025-12-01 14:17:07.111 [http-nio-8080-exec-3] INFO  c.q.b.c.ConnectionController - Connecting to database: jdbc:postgresql://localhost:5432/postgres
+2025-12-01 14:17:07.112 [http-nio-8080-exec-3] DEBUG o.s.j.d.DriverManagerDataSource - Loaded JDBC driver: org.postgresql.Driver
+2025-12-01 14:17:07.112 [http-nio-8080-exec-3] INFO  c.q.b.c.ConnectionController - Successfully connected to database
+2025-12-01 14:17:14.952 [http-nio-8080-exec-4] DEBUG o.s.jdbc.core.JdbcTemplate - Executing SQL query [SELECT pid, age(clock_timestamp(), query_start), usename, application_name, client_addr, state, query 
+  FROM pg_stat_activity 
+ WHERE query not like '%pg_stat_activity%']
+2025-12-01 14:17:14.954 [http-nio-8080-exec-4] DEBUG o.s.jdbc.datasource.DataSourceUtils - Fetching JDBC Connection from DataSource
+2025-12-01 14:17:14.954 [http-nio-8080-exec-4] DEBUG o.s.j.d.DriverManagerDataSource - Creating new JDBC DriverManager Connection to [jdbc:postgresql://localhost:5432/postgres]
+2025-12-01 14:19:17.422 [http-nio-8080-exec-5] DEBUG o.s.jdbc.core.JdbcTemplate - Executing SQL query [SELECT pid, age(clock_timestamp(), query_start), usename, application_name, client_addr, state, query 
+  FROM pg_stat_activity 
+ WHERE query not like '%pg_stat_activity%']
+2025-12-01 14:19:17.422 [http-nio-8080-exec-5] DEBUG o.s.jdbc.datasource.DataSourceUtils - Fetching JDBC Connection from DataSource
+2025-12-01 14:19:17.422 [http-nio-8080-exec-5] DEBUG o.s.j.d.DriverManagerDataSource - Creating new JDBC DriverManager Connection to [jdbc:postgresql://localhost:5432/postgres]
+2025-12-01 14:48:37.421 [SpringApplicationShutdownHook] INFO  o.s.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-12-01 14:48:37.496 [tomcat-shutdown] INFO  o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete

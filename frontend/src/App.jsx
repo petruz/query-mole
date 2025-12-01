@@ -13,6 +13,7 @@ import { Play, ChevronDown, ChevronRight, Save } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { DndContext, DragOverlay, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
 import { useTheme } from './context/ThemeContext';
+import { extractSqlComments } from './utils/commentExtractor';
 
 function App() {
     // Theme
@@ -21,6 +22,7 @@ function App() {
     const [treeData, setTreeData] = useState([]);
     const [selectedQuery, setSelectedQuery] = useState(null);
     const [sql, setSql] = useState('');
+    const [queryComments, setQueryComments] = useState('');
     const [results, setResults] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -399,7 +401,9 @@ function App() {
     const handleSelectQuery = (node) => {
         if (node.type === 'QUERY') {
             setSelectedQuery(node);
-            setSql(node.query || '');
+            const queryText = node.query || '';
+            setSql(queryText);
+            setQueryComments(extractSqlComments(queryText));
             setResults(null);
             setError(null);
         }
@@ -662,8 +666,16 @@ function App() {
                                     >
                                         {isEditorVisible ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                                     </button>
-                                    <span className="text-sm text-editor-header-text font-medium truncate">
+                                    <span
+                                        className="text-sm text-editor-header-text font-bold truncate relative group"
+                                        title={queryComments || undefined}
+                                    >
                                         {selectedQuery ? selectedQuery.name : 'Select a query'}
+                                        {queryComments && (
+                                            <span className="invisible group-hover:visible absolute left-0 top-full mt-2 w-max max-w-md bg-gray-900 text-white text-xs rounded py-2 px-3 z-50 shadow-lg whitespace-pre-wrap">
+                                                {queryComments}
+                                            </span>
+                                        )}
                                     </span>
                                     {selectedQuery && sql !== (selectedQuery.query || '') && (
                                         <button
