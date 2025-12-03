@@ -40,6 +40,7 @@ export default {
                     'header-bg': 'var(--grid-header-bg)',
                     'header-text': 'var(--grid-header-text)',
                     'header-hover': 'var(--grid-header-hover)',
+                    'header-text-hover': 'var(--grid-header-text-hover)',
                     text: 'var(--grid-text)',
                     'text-null': 'var(--grid-text-null)',
                     border: 'var(--grid-border)',

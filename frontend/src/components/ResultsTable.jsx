@@ -279,10 +279,10 @@ const ResultsTable = forwardRef(({ results, loading, filterText = '' }, ref) => 
                                 <th
                                     key={col}
                                     scope="col"
-                                    className="px-6 py-3 text-left text-xs font-medium text-grid-header-text uppercase tracking-wider whitespace-nowrap border-b border-grid-border cursor-pointer hover:bg-grid-header-hover hover:text-grid-text transition-colors select-none group border-r border-grid-border last:border-r-0"
+                                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider whitespace-nowrap border-b border-grid-border cursor-pointer hover:bg-grid-header-hover transition-colors select-none group border-r border-grid-border last:border-r-0"
                                     onClick={() => requestSort(col)}
                                 >
-                                    <div className="flex items-center gap-1">
+                                    <div className="flex items-center gap-1 text-grid-header-text group-hover:text-grid-header-text-hover transition-colors">
                                         {col}
                                         <span className="text-ui-text-muted group-hover:text-grid-header-text">
                                             {sortConfig.key === col ? (
