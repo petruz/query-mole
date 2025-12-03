@@ -4,21 +4,36 @@ import * as XLSX from 'xlsx';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-const ResultsTable = forwardRef(({ results, loading }, ref) => {
+const ResultsTable = forwardRef(({ results, loading, filterText = '' }, ref) => {
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 50;
 
-    // Reset pagination when results change
+    // Reset pagination when results or filter change
     React.useEffect(() => {
         setCurrentPage(1);
         setSortConfig({ key: null, direction: 'asc' });
-    }, [results]);
+    }, [results, filterText]);
 
     const sortedRows = useMemo(() => {
         if (!results || !results.rows) return [];
 
         let sortableRows = [...results.rows];
+
+        // Apply filter if filterText is provided
+        if (filterText && filterText.trim() !== '') {
+            const lowerFilter = filterText.toLowerCase();
+            sortableRows = sortableRows.filter(row => {
+                // Check if any column value contains the filter text
+                return results.columns.some(col => {
+                    const value = row[col];
+                    if (value === null || value === undefined) return false;
+                    return String(value).toLowerCase().includes(lowerFilter);
+                });
+            });
+        }
+
+        // Apply sorting
         if (sortConfig.key !== null) {
             sortableRows.sort((a, b) => {
                 const aValue = a[sortConfig.key];
@@ -37,7 +52,7 @@ const ResultsTable = forwardRef(({ results, loading }, ref) => {
             });
         }
         return sortableRows;
-    }, [results, sortConfig]);
+    }, [results, sortConfig, filterText]);
 
     const paginatedRows = useMemo(() => {
         const startIndex = (currentPage - 1) * rowsPerPage;

@@ -9,7 +9,7 @@ import ContextMenu from './components/ContextMenu';
 import InputModal from './components/InputModal';
 import ConnectionModal from './components/ConnectionModal';
 import AboutModal from './components/AboutModal';
-import { Play, ChevronDown, ChevronRight, Save } from 'lucide-react';
+import { Play, ChevronDown, ChevronRight, Save, Search } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { DndContext, DragOverlay, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
 import { useTheme } from './context/ThemeContext';
@@ -26,6 +26,7 @@ function App() {
     const [results, setResults] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [filterText, setFilterText] = useState('');
     const [activeDragNode, setActiveDragNode] = useState(null);
 
     const sensors = useSensors(
@@ -687,14 +688,28 @@ function App() {
                                         </button>
                                     )}
                                 </div>
-                                <button
-                                    onClick={handleExecute}
-                                    disabled={loading || !sql}
-                                    className="flex items-center gap-2 bg-editor-button-bg hover:bg-editor-button-hover disabled:bg-editor-button-disabled text-editor-button-text px-4 py-1.5 rounded text-sm font-medium transition-colors"
-                                >
-                                    <Play size={16} />
-                                    Execute
-                                </button>
+                                <div className="flex items-center gap-2">
+                                    {/* Filter Input */}
+                                    <div className="relative">
+                                        <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-editor-header-text" size={14} />
+                                        <input
+                                            type="text"
+                                            placeholder="Filter results..."
+                                            value={filterText}
+                                            onChange={(e) => setFilterText(e.target.value)}
+                                            className="pl-8 pr-3 py-1.5 text-sm bg-editor-bg border border-editor-border rounded text-editor-text placeholder-editor-header-text focus:outline-none focus:border-tree-item-selected-text transition-colors w-48"
+                                        />
+                                    </div>
+                                    {/* Execute Button */}
+                                    <button
+                                        onClick={handleExecute}
+                                        disabled={loading || !sql}
+                                        className="flex items-center gap-2 bg-editor-button-bg hover:bg-editor-button-hover disabled:bg-editor-button-disabled text-editor-button-text px-4 py-1.5 rounded text-sm font-medium transition-colors"
+                                    >
+                                        <Play size={16} />
+                                        Execute
+                                    </button>
+                                </div>
                             </div>
 
                             {isEditorVisible && (
@@ -719,7 +734,7 @@ function App() {
                                 </div>
                             )}
                             <div className="flex-1 overflow-auto">
-                                <ResultsTable ref={resultsTableRef} results={results} loading={loading} />
+                                <ResultsTable ref={resultsTableRef} results={results} loading={loading} filterText={filterText} />
                             </div>
                         </div>
 
