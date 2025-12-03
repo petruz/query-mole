@@ -1,5 +1,7 @@
 import { useState, useRef } from 'react';
 import axios from 'axios';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { extractSqlComments } from '../utils/commentExtractor';
 
 /**
@@ -13,8 +15,10 @@ export function useQueryExecution(selectedQuery) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [filterText, setFilterText] = useState('');
+    const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'chart'
 
     const resultsTableRef = useRef(null);
+    const chartViewRef = useRef(null);
 
     // Update SQL when selectedQuery changes
     const updateSqlFromQuery = (query) => {
@@ -24,6 +28,12 @@ export function useQueryExecution(selectedQuery) {
             setQueryComments(extractSqlComments(queryText));
             setResults(null);
             setError(null);
+            // Auto-switch to chart view if defaultToChart is true
+            if (query.chartConfig && query.chartConfig.defaultToChart) {
+                setViewMode('chart');
+            } else {
+                setViewMode('grid');
+            }
         }
     };
 
@@ -49,6 +59,38 @@ export function useQueryExecution(selectedQuery) {
     const handleExportExcel = () => resultsTableRef.current?.exportToExcel();
     const handleExportPDF = () => resultsTableRef.current?.exportToPDF();
 
+    const handleExportChartImage = async (queryName = 'chart') => {
+        if (!chartViewRef.current) return;
+
+        // Find the canvas element inside the chart container
+        const canvas = chartViewRef.current.querySelector('canvas');
+        if (!canvas) return;
+
+        // Create a link to download the image
+        const url = canvas.toDataURL('image/png');
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${queryName}.png`;
+        a.click();
+    };
+
+    const handleExportChartPDF = async (queryName = 'chart') => {
+        if (!chartViewRef.current) return;
+
+        const canvas = chartViewRef.current.querySelector('canvas');
+        if (!canvas) return;
+
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('landscape');
+
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`${queryName}.pdf`);
+    };
+
     return {
         sql,
         setSql,
@@ -59,11 +101,16 @@ export function useQueryExecution(selectedQuery) {
         error,
         filterText,
         setFilterText,
+        viewMode,
+        setViewMode,
         handleExecute,
         resultsTableRef,
+        chartViewRef,
         handleExportCSV,
         handleExportExcel,
         handleExportPDF,
+        handleExportChartImage,
+        handleExportChartPDF,
         updateSqlFromQuery,
     };
 }

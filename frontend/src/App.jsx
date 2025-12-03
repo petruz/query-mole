@@ -8,7 +8,9 @@ import ContextMenu from './components/ContextMenu';
 import InputModal from './components/InputModal';
 import ConnectionModal from './components/ConnectionModal';
 import AboutModal from './components/AboutModal';
-import { Play, ChevronDown, ChevronRight, Save, Search } from 'lucide-react';
+import ChartConfigModal from './components/ChartConfigModal';
+import ChartView from './components/ChartView';
+import { Play, ChevronDown, ChevronRight, Save, Search, BarChart3, Table } from 'lucide-react';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import { useTheme } from './context/ThemeContext';
 import { useLayout } from './hooks/useLayout';
@@ -30,6 +32,8 @@ function App() {
 
     // Connection editing state
     const [editingConnection, setEditingConnection] = React.useState(null);
+    // Chart config state
+    const [chartConfigModal, setChartConfigModal] = React.useState(false);
 
     // Update SQL when selected query changes
     useEffect(() => {
@@ -60,6 +64,19 @@ function App() {
     const handleEditConnection = (connection) => {
         setEditingConnection(connection);
         modals.setConnectionModal(true);
+    };
+
+    // Handle chart config
+    const handleConfigureChart = () => {
+        setChartConfigModal(true);
+        modals.setContextMenu(null);
+    };
+
+    const handleSaveChartConfig = (config) => {
+        queryTree.handleSaveChartConfig(queryTree.selectedQuery, config);
+        setChartConfigModal(false);
+        // Auto-switch to chart view
+        queryExecution.setViewMode('chart');
     };
 
     return (
@@ -163,6 +180,16 @@ function App() {
                                             className="pl-8 pr-3 py-1.5 text-sm bg-editor-bg border border-editor-border rounded text-editor-text placeholder-editor-header-text focus:outline-none focus:border-tree-item-selected-text transition-colors w-48"
                                         />
                                     </div>
+                                    {/* View Toggle */}
+                                    {queryTree.selectedQuery?.chartConfig && (
+                                        <button
+                                            onClick={() => queryExecution.setViewMode(queryExecution.viewMode === 'grid' ? 'chart' : 'grid')}
+                                            className="text-editor-header-text hover:text-editor-text transition-colors p-1 mr-2"
+                                            title={queryExecution.viewMode === 'grid' ? "Switch to Chart View" : "Switch to Grid View"}
+                                        >
+                                            {queryExecution.viewMode === 'grid' ? <BarChart3 size={16} /> : <Table size={16} />}
+                                        </button>
+                                    )}
                                     {/* Execute Button */}
                                     <button
                                         onClick={queryExecution.handleExecute}
@@ -197,28 +224,47 @@ function App() {
                                 </div>
                             )}
                             <div className="flex-1 overflow-auto">
-                                <ResultsTable ref={queryExecution.resultsTableRef} results={queryExecution.results} loading={queryExecution.loading} filterText={queryExecution.filterText} />
+                                {queryExecution.viewMode === 'chart' ? (
+                                    <div className="h-full w-full bg-grid-bg">
+                                        <div ref={queryExecution.chartViewRef} className="h-full w-full">
+                                            <ChartView
+                                                results={queryExecution.results}
+                                                chartConfig={queryTree.selectedQuery?.chartConfig}
+                                            />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <ResultsTable
+                                        ref={queryExecution.resultsTableRef}
+                                        results={queryExecution.results}
+                                        loading={queryExecution.loading}
+                                        filterText={queryExecution.filterText}
+                                    />
+                                )}
                             </div>
-                        </div>
 
-                        {/* Bottom: Footer */}
-                        <div
-                            className="relative bg-ui-bg-secondary border-t border-ui-border flex-shrink-0"
-                            style={{ height: layout.footerHeight }}
-                        >
-                            {/* Footer Resizer Handle */}
+                            {/* Bottom: Footer */}
                             <div
-                                className="absolute top-0 left-0 w-full h-1 cursor-row-resize hover:bg-ui-resize-handle transition-colors z-10"
-                                onMouseDown={layout.startResizingFooter}
-                            />
-                            <StatusFooter
-                                executionTime={queryExecution.results?.executionTimeMs}
-                                rowCount={queryExecution.results?.rows?.length}
-                                onExportCSV={queryExecution.handleExportCSV}
-                                onExportExcel={queryExecution.handleExportExcel}
-                                onExportPDF={queryExecution.handleExportPDF}
-                                hasResults={!!queryExecution.results && queryExecution.results.rows && queryExecution.results.rows.length > 0}
-                            />
+                                className="relative bg-ui-bg-secondary border-t border-ui-border flex-shrink-0"
+                                style={{ height: layout.footerHeight }}
+                            >
+                                {/* Footer Resizer Handle */}
+                                <div
+                                    className="absolute top-0 left-0 w-full h-1 cursor-row-resize hover:bg-ui-resize-handle transition-colors z-10"
+                                    onMouseDown={layout.startResizingFooter}
+                                />
+                                <StatusFooter
+                                    executionTime={queryExecution.results?.executionTimeMs}
+                                    rowCount={queryExecution.results?.rows?.length}
+                                    onExportCSV={queryExecution.handleExportCSV}
+                                    onExportExcel={queryExecution.handleExportExcel}
+                                    onExportPDF={queryExecution.handleExportPDF}
+                                    onExportChartImage={queryExecution.handleExportChartImage}
+                                    onExportChartPDF={queryExecution.handleExportChartPDF}
+                                    hasResults={!!queryExecution.results && queryExecution.results.rows && queryExecution.results.rows.length > 0}
+                                    viewMode={queryExecution.viewMode}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -245,6 +291,7 @@ function App() {
                             modals.setModal({ type: 'ADD_FOLDER', parentNode: modals.contextMenu.node });
                             modals.setContextMenu(null);
                         }}
+                        onConfigureChart={handleConfigureChart}
                         type={modals.contextMenu.node.type}
                     />
                 )}
@@ -283,6 +330,15 @@ function App() {
 
                 {modals.aboutModal && (
                     <AboutModal onClose={() => modals.setAboutModal(false)} />
+                )}
+
+                {chartConfigModal && queryTree.selectedQuery && (
+                    <ChartConfigModal
+                        initialConfig={queryTree.selectedQuery.chartConfig}
+                        columns={queryExecution.results?.columns || []}
+                        onSave={handleSaveChartConfig}
+                        onCancel={() => setChartConfigModal(false)}
+                    />
                 )}
 
                 <DragOverlay>

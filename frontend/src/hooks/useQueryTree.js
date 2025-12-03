@@ -147,6 +147,26 @@ export function useQueryTree() {
         setSelectedQuery({ ...query, query: sql });
     };
 
+    const handleSaveChartConfig = (query, chartConfig) => {
+        const updateTree = (nodes) => {
+            return nodes.map(node => {
+                if (node.id === query.id) {
+                    return { ...node, chartConfig };
+                }
+                if (node.children) {
+                    return { ...node, children: updateTree(node.children) };
+                }
+                return node;
+            });
+        };
+
+        const newTreeData = updateTree(treeData);
+        setTreeData(newTreeData);
+
+        // Update selectedQuery to reflect the saved chart config
+        setSelectedQuery({ ...query, chartConfig });
+    };
+
     const handleSaveLibrary = async () => {
         const jsonString = JSON.stringify(treeData, null, 2);
 
@@ -349,6 +369,7 @@ export function useQueryTree() {
         handleAddFolder,
         handleAddQuery,
         handleSaveQuery,
+        handleSaveChartConfig,
         handleSaveLibrary,
         handleOpenLibrary,
         handleDragStart,
