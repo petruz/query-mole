@@ -50,6 +50,7 @@ backend/build/
 backend/out/
 backend/.gradle/
 backend/Logs/
+backend/logs/
 frontend/dist/
 frontend/node_modules/
 frontend/coverage/

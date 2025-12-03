@@ -37,9 +37,9 @@
   /* Header title color */
 
   /* ===== Query Editor Colors ===== */
-  --editor-bg: #002147
-    /* Editor background */
-    --editor-text: #e5e7eb;
+  --editor-bg: #111827;
+  /* Editor background */
+  --editor-text: #e5e7eb;
   /* Editor text color */
   --editor-border: #374151;
   /* Editor borders */

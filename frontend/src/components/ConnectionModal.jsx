@@ -184,7 +184,9 @@ const ConnectionModal = ({ onSave, onCancel, onTest, initialData }) => {
     return (
         <div className="fixed inset-0 bg-modal-overlay flex items-center justify-center z-50">
             <div className="bg-modal-bg border border-modal-border rounded-lg shadow-xl w-96 p-6 max-h-[90vh] overflow-y-auto">
-                <h2 className="text-xl font-bold text-modal-text mb-4">New Connection</h2>
+                <h2 className="text-xl font-bold text-modal-text mb-4">
+                    {initialData ? 'Edit Connection' : 'New Connection'}
+                </h2>
 
                 <div className="space-y-4">
                     <div>

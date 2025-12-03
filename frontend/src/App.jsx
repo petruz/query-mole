@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import QueryEditor from './components/QueryEditor';
 import ResultsTable from './components/ResultsTable';
@@ -10,610 +9,73 @@ import InputModal from './components/InputModal';
 import ConnectionModal from './components/ConnectionModal';
 import AboutModal from './components/AboutModal';
 import { Play, ChevronDown, ChevronRight, Save, Search } from 'lucide-react';
-import { v4 as uuidv4 } from 'uuid';
-import { DndContext, DragOverlay, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
+import { DndContext, DragOverlay } from '@dnd-kit/core';
 import { useTheme } from './context/ThemeContext';
-import { extractSqlComments } from './utils/commentExtractor';
+import { useLayout } from './hooks/useLayout';
+import { useModals } from './hooks/useModals';
+import { useConnections } from './hooks/useConnections';
+import { useQueryExecution } from './hooks/useQueryExecution';
+import { useQueryTree } from './hooks/useQueryTree';
 
 function App() {
     // Theme
     const { theme, availableThemes, switchTheme } = useTheme();
 
-    const [treeData, setTreeData] = useState([]);
-    const [selectedQuery, setSelectedQuery] = useState(null);
-    const [sql, setSql] = useState('');
-    const [queryComments, setQueryComments] = useState('');
-    const [results, setResults] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [filterText, setFilterText] = useState('');
-    const [activeDragNode, setActiveDragNode] = useState(null);
+    // Custom hooks
+    const layout = useLayout();
+    const modals = useModals();
+    const connections = useConnections();
+    const queryTree = useQueryTree();
+    const queryExecution = useQueryExecution(queryTree.selectedQuery);
 
-    const sensors = useSensors(
-        useSensor(PointerSensor, {
-            activationConstraint: {
-                distance: 8,
-            },
-        })
-    );
+    // Connection editing state
+    const [editingConnection, setEditingConnection] = React.useState(null);
 
-    // Layout State
-    const [sidebarWidth, setSidebarWidth] = useState(256); // Default 256px
-    const [editorHeight, setEditorHeight] = useState(300); // Default 300px
-    const [footerHeight, setFooterHeight] = useState(32); // Default 32px
-    const [isEditorVisible, setIsEditorVisible] = useState(true);
-
-    // UI State
-    const [contextMenu, setContextMenu] = useState(null); // { x, y, node }
-    const [modal, setModal] = useState(null); // { type: 'RENAME'|'ADD_FOLDER'|'ADD_QUERY', node?, parentId? }
-    const [connectionModal, setConnectionModal] = useState(false);
-    const [aboutModal, setAboutModal] = useState(false);
-
-    // Connection State
-    const [connections, setConnections] = useState([]);
-    const [activeConnectionId, setActiveConnectionId] = useState(null);
-
-    const sidebarRef = useRef(null);
-    const editorRef = useRef(null);
-    const resultsTableRef = useRef(null);
-
-    const handleExportCSV = () => resultsTableRef.current?.exportToCSV();
-    const handleExportExcel = () => resultsTableRef.current?.exportToExcel();
-    const handleExportPDF = () => resultsTableRef.current?.exportToPDF();
-    const isResizingSidebar = useRef(false);
-    const isResizingEditor = useRef(false);
-    const isResizingFooter = useRef(false);
-
+    // Update SQL when selected query changes
     useEffect(() => {
-        // Auto-load state
-        const savedConnections = localStorage.getItem('qm_connections');
-        const savedActiveId = localStorage.getItem('qm_active_connection_id');
-        const savedTree = localStorage.getItem('qm_last_tree');
-
-        if (savedConnections) {
-            setConnections(JSON.parse(savedConnections));
+        if (queryTree.selectedQuery) {
+            queryExecution.updateSqlFromQuery(queryTree.selectedQuery);
         }
-        if (savedActiveId) {
-            setActiveConnectionId(savedActiveId);
-            // Trigger connection if we have one?
-            // We might need to wait for connections to be set, but here we can just set the ID.
-            // The actual connection logic might need to be triggered explicitly or via effect.
-        }
-        if (savedTree) {
-            setTreeData(JSON.parse(savedTree));
-        } else {
-            // Default initial state: Empty "Queries" folder
-            setTreeData([
-                {
-                    id: uuidv4(),
-                    name: 'Queries',
-                    type: 'FOLDER',
-                    children: []
-                }
-            ]);
-        }
-    }, []);
+    }, [queryTree.selectedQuery]);
 
-    useEffect(() => {
-        // Auto-save tree to local storage on change
-        if (treeData.length > 0) {
-            localStorage.setItem('qm_last_tree', JSON.stringify(treeData));
-        }
-    }, [treeData]);
-
-    useEffect(() => {
-        // Attempt to connect when activeConnectionId changes (and connections are loaded)
-        if (activeConnectionId && connections.length > 0) {
-            const conn = connections.find(c => c.id === activeConnectionId);
-            if (conn) {
-                connectToDatabase(conn);
-                localStorage.setItem('qm_active_connection_id', activeConnectionId);
-            }
-        }
-    }, [activeConnectionId, connections]);
-
-    const connectToDatabase = async (connection) => {
-        try {
-            await axios.post('/api/connection/connect', connection);
-            // alert(`Connected to ${connection.name}`);
-        } catch (err) {
-            console.error('Connection failed:', err);
-            alert(`Failed to connect to ${connection.name}: ${err.response?.data?.error || err.message}`);
-        }
-    };
-
-    const handleSaveConnection = (formData) => {
-        const newConn = { ...formData, id: uuidv4() };
-        const newConnections = [...connections, newConn];
-        setConnections(newConnections);
-        localStorage.setItem('qm_connections', JSON.stringify(newConnections));
-        setConnectionModal(false);
-        setActiveConnectionId(newConn.id); // Auto-select new connection
-    };
-
-    const handleTestConnection = async (formData) => {
-        const response = await axios.post('/api/connection/test', formData);
-        return response.data;
-    };
-
-    const handleSaveConnectionsToFile = async () => {
-        const jsonString = JSON.stringify(connections, null, 2);
-        // ... (reuse file saving logic or genericize it)
-        try {
-            if ('showSaveFilePicker' in window) {
-                const handle = await window.showSaveFilePicker({
-                    suggestedName: 'connections.json',
-                    types: [{ description: 'JSON Files', accept: { 'application/json': ['.json'] } }],
-                });
-                const writable = await handle.createWritable();
-                await writable.write(jsonString);
-                await writable.close();
-            } else {
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonString);
-                const a = document.createElement('a');
-                a.href = dataStr;
-                a.download = "connections.json";
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-            }
-        } catch (err) {
-            if (err.name !== 'AbortError') alert('Failed to save connections');
-        }
-    };
-
-    const handleLoadConnectionsFromFile = () => {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'application/json';
-        input.onchange = (e) => {
-            const file = e.target.files[0];
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                try {
-                    const json = JSON.parse(event.target.result);
-                    setConnections(json);
-                    localStorage.setItem('qm_connections', JSON.stringify(json));
-                    if (json.length > 0) setActiveConnectionId(json[0].id);
-                } catch (err) {
-                    alert("Failed to load connections: Invalid JSON");
-                }
-            };
-            reader.readAsText(file);
-        };
-        input.click();
-    };
-
-    // Mouse move handler for resizing
-    useEffect(() => {
-        const handleMouseMove = (e) => {
-            if (isResizingSidebar.current) {
-                const newWidth = e.clientX;
-                if (newWidth > 150 && newWidth < 600) setSidebarWidth(newWidth);
-            }
-            if (isResizingEditor.current && isEditorVisible) {
-                const newHeight = e.clientY;
-                if (newHeight > 100 && newHeight < window.innerHeight - 100) setEditorHeight(newHeight);
-            }
-            if (isResizingFooter.current) {
-                const newHeight = window.innerHeight - e.clientY;
-                if (newHeight > 24 && newHeight < 200) setFooterHeight(newHeight);
-            }
-        };
-
-        const handleMouseUp = () => {
-            isResizingSidebar.current = false;
-            isResizingEditor.current = false;
-            isResizingFooter.current = false;
-            document.body.style.cursor = 'default';
-            document.body.style.userSelect = 'auto';
-        };
-
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
-
-        return () => {
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', handleMouseUp);
-        };
-    }, [isEditorVisible]);
-
-    const fetchTree = async () => {
-        try {
-            const response = await axios.get('/api/queries');
-            setTreeData(response.data);
-        } catch (err) {
-            console.error("Failed to fetch query tree", err);
-        }
-    };
-
-    // --- Tree Operations ---
-
-    const handleNodeContextMenu = (e, node) => {
-        e.preventDefault();
-        setContextMenu({ x: e.clientX, y: e.clientY, node });
-    };
-
-    const handleRename = (newName) => {
-        if (!modal || !modal.node) return;
-        const updateTree = (nodes) => {
-            return nodes.map(node => {
-                if (node.id === modal.node.id) {
-                    return { ...node, name: newName };
-                }
-                if (node.children) {
-                    return { ...node, children: updateTree(node.children) };
-                }
-                return node;
-            });
-        };
-        setTreeData(updateTree(treeData));
-        setModal(null);
-    };
-
-    const handleDelete = () => {
-        if (!contextMenu || !contextMenu.node) return;
-        const nodeId = contextMenu.node.id;
-        const deleteFromTree = (nodes) => {
-            return nodes.filter(node => node.id !== nodeId).map(node => {
-                if (node.children) {
-                    return { ...node, children: deleteFromTree(node.children) };
-                }
-                return node;
-            });
-        };
-        setTreeData(deleteFromTree(treeData));
-        if (selectedQuery?.id === nodeId) {
-            setSelectedQuery(null);
-            setSql('');
-        }
-        setContextMenu(null);
-    };
-
-    const handleAddFolder = (name) => {
-        const newFolder = { id: uuidv4(), name, type: 'FOLDER', children: [] };
-
-        if (modal?.parentNode) {
-            // Add to parent folder
-            const addToParent = (nodes) => {
-                return nodes.map(node => {
-                    if (node.id === modal.parentNode.id) {
-                        return { ...node, children: [...(node.children || []), newFolder] };
-                    }
-                    if (node.children) {
-                        return { ...node, children: addToParent(node.children) };
-                    }
-                    return node;
-                });
-            };
-            setTreeData(addToParent(treeData));
-        } else {
-            // Add to root
-            setTreeData([...treeData, newFolder]);
-        }
-        setModal(null);
-    };
-
-    const handleAddQuery = (name) => {
-        const newQuery = { id: uuidv4(), name, type: 'QUERY', query: 'SELECT * FROM ...', children: [] };
-
-        if (modal?.parentNode) {
-            // Add to parent folder
-            const addToParent = (nodes) => {
-                return nodes.map(node => {
-                    if (node.id === modal.parentNode.id) {
-                        return { ...node, children: [...(node.children || []), newQuery] };
-                    }
-                    if (node.children) {
-                        return { ...node, children: addToParent(node.children) };
-                    }
-                    return node;
-                });
-            };
-            setTreeData(addToParent(treeData));
-        } else {
-            // Add to root
-            setTreeData([...treeData, newQuery]);
-        }
-        setModal(null);
-    };
-
+    // Handle query save
     const handleSaveQuery = () => {
-        if (!selectedQuery) return;
-
-        const updateTree = (nodes) => {
-            return nodes.map(node => {
-                if (node.id === selectedQuery.id) {
-                    return { ...node, query: sql };
-                }
-                if (node.children) {
-                    return { ...node, children: updateTree(node.children) };
-                }
-                return node;
-            });
-        };
-
-        const newTreeData = updateTree(treeData);
-        setTreeData(newTreeData);
-
-        // Update selectedQuery to reflect the saved state so the icon disappears
-        setSelectedQuery({ ...selectedQuery, query: sql });
+        if (!queryTree.selectedQuery) return;
+        queryTree.handleSaveQuery(queryTree.selectedQuery, queryExecution.sql);
     };
 
-    // --- File Operations ---
-
-    const handleSaveLibrary = async () => {
-        const jsonString = JSON.stringify(treeData, null, 2); // Pretty print
-
-        try {
-            // Check if the File System Access API is supported
-            if ('showSaveFilePicker' in window) {
-                const handle = await window.showSaveFilePicker({
-                    suggestedName: 'query_library.json',
-                    types: [{
-                        description: 'JSON Files',
-                        accept: { 'application/json': ['.json'] },
-                    }],
-                });
-                const writable = await handle.createWritable();
-                await writable.write(jsonString);
-                await writable.close();
-            } else {
-                // Fallback for browsers that don't support the API
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonString);
-                const downloadAnchorNode = document.createElement('a');
-                downloadAnchorNode.setAttribute("href", dataStr);
-                downloadAnchorNode.setAttribute("download", "query_library.json");
-                document.body.appendChild(downloadAnchorNode);
-                downloadAnchorNode.click();
-                downloadAnchorNode.remove();
-            }
-        } catch (err) {
-            if (err.name !== 'AbortError') {
-                console.error('Failed to save library:', err);
-                alert('Failed to save library');
-            }
+    // Handle modal actions
+    const handleModalConfirm = (value) => {
+        if (modals.modal.type === 'RENAME') {
+            queryTree.handleRename(modals.modal.node, value);
+        } else if (modals.modal.type === 'ADD_FOLDER') {
+            queryTree.handleAddFolder(value, modals.modal.parentNode);
+        } else if (modals.modal.type === 'ADD_QUERY') {
+            queryTree.handleAddQuery(value, modals.modal.parentNode);
         }
+        modals.setModal(null);
     };
 
-    const handleOpenLibrary = () => {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'application/json';
-        input.onchange = (e) => {
-            const file = e.target.files[0];
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                try {
-                    const json = JSON.parse(event.target.result);
-                    setTreeData(json);
-                } catch (err) {
-                    console.error("Invalid JSON", err);
-                    alert("Failed to load library: Invalid JSON");
-                }
-            };
-            reader.readAsText(file);
-        };
-        input.click();
-    };
-
-    // --- Execution ---
-
-    const handleSelectQuery = (node) => {
-        if (node.type === 'QUERY') {
-            setSelectedQuery(node);
-            const queryText = node.query || '';
-            setSql(queryText);
-            setQueryComments(extractSqlComments(queryText));
-            setResults(null);
-            setError(null);
-        }
-    };
-
-    const handleExecute = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await axios.post('/api/execute', { sql });
-            if (response.data.success) {
-                setResults(response.data);
-            } else {
-                setError(response.data.error);
-                setResults(null);
-            }
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    // --- Resizing Handlers ---
-    const startResizingSidebar = () => {
-        isResizingSidebar.current = true;
-        document.body.style.cursor = 'col-resize';
-        document.body.style.userSelect = 'none';
-    };
-    const startResizingEditor = () => {
-        isResizingEditor.current = true;
-        document.body.style.cursor = 'row-resize';
-        document.body.style.userSelect = 'none';
-    };
-    const startResizingFooter = () => {
-        isResizingFooter.current = true;
-        document.body.style.cursor = 'row-resize';
-        document.body.style.userSelect = 'none';
-    };
-
-    const handleDragStart = (event) => {
-        setActiveDragNode(event.active.data.current.node);
-    };
-
-    const handleDragEnd = (event) => {
-        const { active, over } = event;
-        setActiveDragNode(null);
-
-        if (!over) {
-            return;
-        }
-
-        const activeId = active.id;
-        const overId = over.id;
-
-        if (activeId === overId) {
-            return;
-        }
-
-        setTreeData((items) => {
-            // Helper to find parent of a node
-            const findParent = (nodes, id, parent = null) => {
-                for (const node of nodes) {
-                    if (node.children && node.children.some(child => child.id === id)) {
-                        return node;
-                    }
-                    if (node.children) {
-                        const found = findParent(node.children, id, node);
-                        if (found) return found;
-                    }
-                }
-                return null;
-            };
-
-            const activeParent = findParent(items, activeId);
-            const overParent = findParent(items, overId);
-
-            // Check if both are at root level
-            const isActiveRoot = items.some(n => n.id === activeId);
-            const isOverRoot = items.some(n => n.id === overId);
-
-            // Case 1: Reordering within the same container
-            // Both at root OR both have the same parent
-            const sameParent = (activeParent === null && overParent === null) ||
-                (activeParent?.id === overParent?.id);
-
-            if (sameParent) {
-                const result = reorderNodes(items, activeId, overId);
-                return result;
-            }
-
-            // Case 2: Moving to a different folder
-            // Check if over is a folder - if so, move inside it
-            const overNode = findNodeById(items, overId);
-
-            if (overNode && overNode.type === 'FOLDER') {
-                return moveNode(items, activeId, overId);
-            }
-
-            // Otherwise, no action
-            return items;
-        });
-    };
-
-    // Helper to find a node by ID
-    const findNodeById = (nodes, id) => {
-        for (const node of nodes) {
-            if (node.id === id) return node;
-            if (node.children) {
-                const found = findNodeById(node.children, id);
-                if (found) return found;
-            }
-        }
-        return null;
-    };
-
-    // Helper to reorder nodes recursively
-    const reorderNodes = (nodes, activeId, overId) => {
-        const activeNodeIndex = nodes.findIndex(n => n.id === activeId);
-        const overNodeIndex = nodes.findIndex(n => n.id === overId);
-
-        if (activeNodeIndex !== -1 && overNodeIndex !== -1) {
-            // Found both at this level, reorder them
-            return arrayMove(nodes, activeNodeIndex, overNodeIndex);
-        }
-
-        // Recursively search in children
-        return nodes.map(node => {
-            if (node.children && node.children.length > 0) {
-                return {
-                    ...node,
-                    children: reorderNodes(node.children, activeId, overId)
-                };
-            }
-            return node;
-        });
-    };
-
-    // Helper from dnd-kit
-    const arrayMove = (array, from, to) => {
-        const newArray = array.slice();
-        const [removed] = newArray.splice(from, 1);
-        newArray.splice(to, 0, removed);
-        return newArray;
-    };
-
-    const moveNode = (nodes, nodeId, targetFolderId) => {
-        let nodeToMove = null;
-
-        // 1. Remove node from old location
-        const removeNode = (list) => {
-            return list.filter(item => {
-                if (item.id === nodeId) {
-                    nodeToMove = item;
-                    return false;
-                }
-                if (item.children) {
-                    item.children = removeNode(item.children);
-                }
-                return true;
-            });
-        };
-
-        let newTree = removeNode([...nodes]);
-
-        if (!nodeToMove) return nodes; // Failed to find node
-
-        // 2. Add node to new location
-        const addNode = (list) => {
-            return list.map(item => {
-                if (item.id === targetFolderId && item.type === 'FOLDER') {
-                    return { ...item, children: [...(item.children || []), nodeToMove] };
-                }
-                if (item.children) {
-                    return { ...item, children: addNode(item.children) };
-                }
-                return item;
-            });
-        };
-
-        return addNode(newTree);
-    };
-
-    const handleDeleteConnection = (id) => {
-        if (window.confirm('Are you sure you want to delete this connection?')) {
-            const updatedConnections = connections.filter(c => c.id !== id);
-            setConnections(updatedConnections);
-            localStorage.setItem('qm_connections', JSON.stringify(updatedConnections));
-
-            if (activeConnectionId === id) {
-                setActiveConnectionId(null);
-                localStorage.removeItem('qm_active_connection_id');
-                setTreeData([]);
-                setResults(null);
-            }
-        }
+    // Handle connection edit
+    const handleEditConnection = (connection) => {
+        setEditingConnection(connection);
+        modals.setConnectionModal(true);
     };
 
     return (
-        <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-            <div className="flex flex-col h-screen bg-ui-bg-primary text-ui-text-primary overflow-hidden font-sans" onClick={() => setContextMenu(null)}>
+        <DndContext sensors={queryTree.sensors} onDragStart={queryTree.handleDragStart} onDragEnd={queryTree.handleDragEnd}>
+            <div className="flex flex-col h-screen bg-ui-bg-primary text-ui-text-primary overflow-hidden font-sans" onClick={() => modals.setContextMenu(null)}>
                 {/* Menu Bar */}
                 <MenuBar
-                    onOpenLibrary={handleOpenLibrary}
-                    onSaveLibrary={handleSaveLibrary}
-                    onNewConnection={() => setConnectionModal(true)}
-                    onLoadConnections={handleLoadConnectionsFromFile}
-                    onSaveConnections={handleSaveConnectionsToFile}
-                    onAbout={() => setAboutModal(true)}
+                    onOpenLibrary={queryTree.handleOpenLibrary}
+                    onSaveLibrary={queryTree.handleSaveLibrary}
+                    onNewConnection={() => {
+                        setEditingConnection(null);
+                        modals.setConnectionModal(true);
+                    }}
+                    onLoadConnections={connections.handleLoadConnectionsFromFile}
+                    onSaveConnections={connections.handleSaveConnectionsToFile}
+                    onAbout={() => modals.setAboutModal(true)}
                     currentTheme={theme}
                     availableThemes={availableThemes}
                     onThemeChange={switchTheme}
@@ -623,31 +85,32 @@ function App() {
                     {/* Sidebar */}
                     <div
                         className="flex flex-col border-r border-ui-border relative flex-shrink-0"
-                        style={{ width: sidebarWidth }}
+                        style={{ width: layout.sidebarWidth }}
                     >
                         <div className="p-4 border-b border-tree-border flex justify-between items-center bg-tree-header-bg">
                             <span className="font-bold text-xl tracking-tight text-tree-header-text">Query Mole</span>
                             <div className="flex gap-1">
-                                <button onClick={() => setModal({ type: 'ADD_FOLDER' })} className="text-tree-text-muted hover:text-tree-text" title="Add Folder">+</button>
+                                <button onClick={() => modals.setModal({ type: 'ADD_FOLDER' })} className="text-tree-text-muted hover:text-tree-text" title="Add Folder">+</button>
                             </div>
                         </div>
-                        <div className="flex-1 overflow-y-auto p-0"> {/* Removed padding to fit selector */}
+                        <div className="flex-1 overflow-y-auto p-0">
                             <Sidebar
-                                nodes={treeData}
-                                onSelect={handleSelectQuery}
-                                selectedId={selectedQuery?.id}
-                                onContextMenu={handleNodeContextMenu}
-                                connections={connections}
-                                activeConnectionId={activeConnectionId}
-                                onConnectionChange={setActiveConnectionId}
-                                onDeleteConnection={handleDeleteConnection}
+                                nodes={queryTree.treeData}
+                                onSelect={queryTree.handleSelectQuery}
+                                selectedId={queryTree.selectedQuery?.id}
+                                onContextMenu={modals.handleNodeContextMenu}
+                                connections={connections.connections}
+                                activeConnectionId={connections.activeConnectionId}
+                                onConnectionChange={connections.setActiveConnectionId}
+                                onDeleteConnection={connections.handleDeleteConnection}
+                                onEditConnection={handleEditConnection}
                             />
                         </div>
 
                         {/* Sidebar Resizer Handle */}
                         <div
                             className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-ui-resize-handle transition-colors z-10"
-                            onMouseDown={startResizingSidebar}
+                            onMouseDown={layout.startResizingSidebar}
                         />
                     </div>
 
@@ -656,29 +119,29 @@ function App() {
                         {/* Top: Editor */}
                         <div
                             className="flex flex-col bg-editor-header-bg border-b border-editor-border relative flex-shrink-0"
-                            style={{ height: isEditorVisible ? editorHeight : 'auto' }}
+                            style={{ height: layout.isEditorVisible ? layout.editorHeight : 'auto' }}
                         >
                             <div className="p-2 border-b border-editor-border flex justify-between items-center bg-editor-header-bg select-none">
                                 <div className="flex items-center gap-2">
                                     <button
-                                        onClick={() => setIsEditorVisible(!isEditorVisible)}
+                                        onClick={() => layout.setIsEditorVisible(!layout.isEditorVisible)}
                                         className="text-editor-header-text hover:text-editor-text transition-colors focus:outline-none"
-                                        title={isEditorVisible ? "Collapse Editor" : "Expand Editor"}
+                                        title={layout.isEditorVisible ? "Collapse Editor" : "Expand Editor"}
                                     >
-                                        {isEditorVisible ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                                        {layout.isEditorVisible ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                                     </button>
                                     <span
                                         className="text-sm text-editor-header-text font-bold truncate relative group"
-                                        title={queryComments || undefined}
+                                        title={queryExecution.queryComments || undefined}
                                     >
-                                        {selectedQuery ? selectedQuery.name : 'Select a query'}
-                                        {queryComments && (
+                                        {queryTree.selectedQuery ? queryTree.selectedQuery.name : 'Select a query'}
+                                        {queryExecution.queryComments && (
                                             <span className="invisible group-hover:visible absolute left-0 top-full mt-2 w-max max-w-md bg-gray-900 text-white text-xs rounded py-2 px-3 z-50 shadow-lg whitespace-pre-wrap">
-                                                {queryComments}
+                                                {queryExecution.queryComments}
                                             </span>
                                         )}
                                     </span>
-                                    {selectedQuery && sql !== (selectedQuery.query || '') && (
+                                    {queryTree.selectedQuery && queryExecution.sql !== (queryTree.selectedQuery.query || '') && (
                                         <button
                                             onClick={handleSaveQuery}
                                             className="text-editor-header-text hover:text-tree-item-selected-text transition-colors"
@@ -695,15 +158,15 @@ function App() {
                                         <input
                                             type="text"
                                             placeholder="Filter results..."
-                                            value={filterText}
-                                            onChange={(e) => setFilterText(e.target.value)}
+                                            value={queryExecution.filterText}
+                                            onChange={(e) => queryExecution.setFilterText(e.target.value)}
                                             className="pl-8 pr-3 py-1.5 text-sm bg-editor-bg border border-editor-border rounded text-editor-text placeholder-editor-header-text focus:outline-none focus:border-tree-item-selected-text transition-colors w-48"
                                         />
                                     </div>
                                     {/* Execute Button */}
                                     <button
-                                        onClick={handleExecute}
-                                        disabled={loading || !sql}
+                                        onClick={queryExecution.handleExecute}
+                                        disabled={queryExecution.loading || !queryExecution.sql}
                                         className="flex items-center gap-2 bg-editor-button-bg hover:bg-editor-button-hover disabled:bg-editor-button-disabled text-editor-button-text px-4 py-1.5 rounded text-sm font-medium transition-colors"
                                     >
                                         <Play size={16} />
@@ -712,15 +175,15 @@ function App() {
                                 </div>
                             </div>
 
-                            {isEditorVisible && (
+                            {layout.isEditorVisible && (
                                 <>
                                     <div className="flex-1 relative overflow-hidden">
-                                        <QueryEditor value={sql} onChange={setSql} />
+                                        <QueryEditor value={queryExecution.sql} onChange={queryExecution.setSql} />
                                     </div>
                                     {/* Editor Resizer Handle */}
                                     <div
                                         className="absolute bottom-0 left-0 w-full h-1 cursor-row-resize hover:bg-ui-resize-handle transition-colors z-10"
-                                        onMouseDown={startResizingEditor}
+                                        onMouseDown={layout.startResizingEditor}
                                     />
                                 </>
                             )}
@@ -728,93 +191,104 @@ function App() {
 
                         {/* Middle: Results */}
                         <div className="flex-1 overflow-hidden bg-grid-bg flex flex-col min-h-0">
-                            {error && (
+                            {queryExecution.error && (
                                 <div className="p-4 bg-ui-error-bg text-ui-error-text border-b border-ui-error-border flex-shrink-0">
-                                    Error: {error}
+                                    Error: {queryExecution.error}
                                 </div>
                             )}
                             <div className="flex-1 overflow-auto">
-                                <ResultsTable ref={resultsTableRef} results={results} loading={loading} filterText={filterText} />
+                                <ResultsTable ref={queryExecution.resultsTableRef} results={queryExecution.results} loading={queryExecution.loading} filterText={queryExecution.filterText} />
                             </div>
                         </div>
 
                         {/* Bottom: Footer */}
                         <div
                             className="relative bg-ui-bg-secondary border-t border-ui-border flex-shrink-0"
-                            style={{ height: footerHeight }}
+                            style={{ height: layout.footerHeight }}
                         >
                             {/* Footer Resizer Handle */}
                             <div
                                 className="absolute top-0 left-0 w-full h-1 cursor-row-resize hover:bg-ui-resize-handle transition-colors z-10"
-                                onMouseDown={startResizingFooter}
+                                onMouseDown={layout.startResizingFooter}
                             />
                             <StatusFooter
-                                executionTime={results?.executionTimeMs}
-                                rowCount={results?.rows?.length}
-                                onExportCSV={handleExportCSV}
-                                onExportExcel={handleExportExcel}
-                                onExportPDF={handleExportPDF}
-                                hasResults={!!results && results.rows && results.rows.length > 0}
+                                executionTime={queryExecution.results?.executionTimeMs}
+                                rowCount={queryExecution.results?.rows?.length}
+                                onExportCSV={queryExecution.handleExportCSV}
+                                onExportExcel={queryExecution.handleExportExcel}
+                                onExportPDF={queryExecution.handleExportPDF}
+                                hasResults={!!queryExecution.results && queryExecution.results.rows && queryExecution.results.rows.length > 0}
                             />
                         </div>
                     </div>
                 </div>
 
                 {/* Modals & Menus */}
-                {contextMenu && (
+                {modals.contextMenu && (
                     <ContextMenu
-                        x={contextMenu.x}
-                        y={contextMenu.y}
-                        onClose={() => setContextMenu(null)}
+                        x={modals.contextMenu.x}
+                        y={modals.contextMenu.y}
+                        onClose={() => modals.setContextMenu(null)}
                         onRename={() => {
-                            setModal({ type: 'RENAME', node: contextMenu.node });
-                            setContextMenu(null);
+                            modals.setModal({ type: 'RENAME', node: modals.contextMenu.node });
+                            modals.setContextMenu(null);
                         }}
-                        onDelete={handleDelete}
+                        onDelete={() => {
+                            queryTree.handleDelete(modals.contextMenu.node);
+                            modals.setContextMenu(null);
+                        }}
                         onAddQuery={() => {
-                            setModal({ type: 'ADD_QUERY', parentNode: contextMenu.node });
-                            setContextMenu(null);
+                            modals.setModal({ type: 'ADD_QUERY', parentNode: modals.contextMenu.node });
+                            modals.setContextMenu(null);
                         }}
                         onAddFolder={() => {
-                            setModal({ type: 'ADD_FOLDER', parentNode: contextMenu.node });
-                            setContextMenu(null);
+                            modals.setModal({ type: 'ADD_FOLDER', parentNode: modals.contextMenu.node });
+                            modals.setContextMenu(null);
                         }}
-                        type={contextMenu.node.type}
+                        type={modals.contextMenu.node.type}
                     />
                 )}
 
-                {modal && (
+                {modals.modal && (
                     <InputModal
                         title={
-                            modal.type === 'RENAME' ? 'Rename Item' :
-                                modal.type === 'ADD_FOLDER' ? 'New Folder' : 'New Query'
+                            modals.modal.type === 'RENAME' ? 'Rename Item' :
+                                modals.modal.type === 'ADD_FOLDER' ? 'New Folder' : 'New Query'
                         }
-                        initialValue={modal.type === 'RENAME' ? modal.node.name : ''}
-                        onConfirm={(val) => {
-                            if (modal.type === 'RENAME') handleRename(val);
-                            else if (modal.type === 'ADD_FOLDER') handleAddFolder(val);
-                            else if (modal.type === 'ADD_QUERY') handleAddQuery(val);
-                        }}
-                        onCancel={() => setModal(null)}
+                        initialValue={modals.modal.type === 'RENAME' ? modals.modal.node.name : ''}
+                        onConfirm={handleModalConfirm}
+                        onCancel={() => modals.setModal(null)}
                     />
                 )}
 
-                {connectionModal && (
+                {modals.connectionModal && (
                     <ConnectionModal
-                        onSave={handleSaveConnection}
-                        onCancel={() => setConnectionModal(false)}
-                        onTest={handleTestConnection}
+                        initialData={editingConnection}
+                        onSave={(formData) => {
+                            if (editingConnection) {
+                                connections.handleEditConnection(editingConnection.id, formData);
+                            } else {
+                                connections.handleSaveConnection(formData);
+                            }
+                            modals.setConnectionModal(false);
+                            setEditingConnection(null);
+                        }}
+                        onCancel={() => {
+                            modals.setConnectionModal(false);
+                            setEditingConnection(null);
+                        }}
+                        onTest={connections.handleTestConnection}
                     />
                 )}
 
-                {aboutModal && (
-                    <AboutModal onClose={() => setAboutModal(false)} />
+                {modals.aboutModal && (
+                    <AboutModal onClose={() => modals.setAboutModal(false)} />
                 )}
 
                 <DragOverlay>
-                    {activeDragNode ? (
+                    {queryTree.activeDragNode ? (
                         <div className="px-2 py-1 bg-tree-item-hover rounded shadow text-tree-text opacity-80">
-                            {activeDragNode.name}
+                            {queryTree.activeDragNode.name}
                         </div>
                     ) : null}
                 </DragOverlay>
