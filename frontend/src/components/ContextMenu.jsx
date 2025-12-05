@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-const ContextMenu = ({ x, y, onClose, onRename, onDelete, onAddQuery, onAddFolder, type }) => {
+const ContextMenu = ({ x, y, onClose, onRename, onDelete, onAddQuery, onAddFolder, onConfigureChart, type }) => {
     const menuRef = useRef(null);
 
     useEffect(() => {
@@ -16,7 +16,7 @@ const ContextMenu = ({ x, y, onClose, onRename, onDelete, onAddQuery, onAddFolde
     return (
         <div
             ref={menuRef}
-            className="fixed bg-gray-800 border border-gray-700 rounded shadow-lg z-50 py-1 min-w-[120px]"
+            className="fixed bg-gray-800 border border-gray-700 rounded shadow-lg z-50 py-1 min-w-[150px]"
             style={{ top: y, left: x }}
         >
             <button
@@ -25,6 +25,14 @@ const ContextMenu = ({ x, y, onClose, onRename, onDelete, onAddQuery, onAddFolde
             >
                 Rename
             </button>
+            {type === 'QUERY' && (
+                <button
+                    className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                    onClick={onConfigureChart}
+                >
+                    Configure Chart
+                </button>
+            )}
             {type === 'FOLDER' && (
                 <>
                     <button

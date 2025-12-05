@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-const ConnectionSelector = ({ connections, activeConnectionId, onConnectionChange, onDeleteConnection }) => {
+const ConnectionSelector = ({ connections, activeConnectionId, onConnectionChange, onDeleteConnection, onEditConnection }) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
 
@@ -29,6 +29,18 @@ const ConnectionSelector = ({ connections, activeConnectionId, onConnectionChang
     const handleDelete = (e, id) => {
         e.stopPropagation();
         onDeleteConnection(id);
+    };
+
+    const handleEdit = (e, conn) => {
+        e.stopPropagation();
+        onEditConnection(conn);
+        setIsOpen(false);
+    };
+
+    const handleContextMenu = (e, conn) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onEditConnection(conn);
     };
 
     return (
@@ -61,18 +73,32 @@ const ConnectionSelector = ({ connections, activeConnectionId, onConnectionChang
                                     conn.id === activeConnectionId ? "bg-tree-item-selected-bg text-tree-item-selected-text" : "text-tree-text"
                                 )}
                                 onClick={() => handleSelect(conn.id)}
+                                onContextMenu={(e) => handleContextMenu(e, conn)}
+                                title="Right-click to edit"
                             >
                                 <div className="flex items-center gap-2 truncate">
                                     <Database size={14} className={conn.id === activeConnectionId ? "text-tree-item-selected-text" : "text-tree-text-muted"} />
                                     <span className="truncate">{conn.name}</span>
                                 </div>
-                                <button
-                                    className="p-1 rounded hover:bg-ui-error-bg hover:text-ui-error-text text-tree-text-muted opacity-0 group-hover:opacity-100 transition-all"
-                                    onClick={(e) => handleDelete(e, conn.id)}
-                                    title="Delete Connection"
-                                >
-                                    <Trash2 size={14} />
-                                </button>
+                                <div className="flex gap-1">
+                                    <button
+                                        className="p-1 rounded hover:bg-tree-item-hover hover:text-tree-item-selected-text text-tree-text-muted opacity-0 group-hover:opacity-100 transition-all"
+                                        onClick={(e) => handleEdit(e, conn)}
+                                        title="Edit Connection"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                            <path d="m15 5 4 4" />
+                                        </svg>
+                                    </button>
+                                    <button
+                                        className="p-1 rounded hover:bg-ui-error-bg hover:text-ui-error-text text-tree-text-muted opacity-0 group-hover:opacity-100 transition-all"
+                                        onClick={(e) => handleDelete(e, conn.id)}
+                                        title="Delete Connection"
+                                    >
+                                        <Trash2 size={14} />
+                                    </button>
+                                </div>
                             </div>
                         ))
                     )}
@@ -175,7 +201,7 @@ const SortableTreeNode = ({ node, onSelect, selectedId, onContextMenu, level = 0
     );
 };
 
-const Sidebar = ({ nodes, onSelect, selectedId, onContextMenu, connections, activeConnectionId, onConnectionChange, onDeleteConnection }) => {
+const Sidebar = ({ nodes, onSelect, selectedId, onContextMenu, connections, activeConnectionId, onConnectionChange, onDeleteConnection, onEditConnection }) => {
     return (
         <div className="flex flex-col h-full">
             {/* Connection Selector */}
@@ -185,6 +211,7 @@ const Sidebar = ({ nodes, onSelect, selectedId, onContextMenu, connections, acti
                     activeConnectionId={activeConnectionId}
                     onConnectionChange={onConnectionChange}
                     onDeleteConnection={onDeleteConnection}
+                    onEditConnection={onEditConnection}
                 />
             </div>
 

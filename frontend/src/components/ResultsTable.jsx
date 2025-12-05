@@ -4,21 +4,36 @@ import * as XLSX from 'xlsx';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-const ResultsTable = forwardRef(({ results, loading }, ref) => {
+const ResultsTable = forwardRef(({ results, loading, filterText = '' }, ref) => {
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 50;
 
-    // Reset pagination when results change
+    // Reset pagination when results or filter change
     React.useEffect(() => {
         setCurrentPage(1);
         setSortConfig({ key: null, direction: 'asc' });
-    }, [results]);
+    }, [results, filterText]);
 
     const sortedRows = useMemo(() => {
         if (!results || !results.rows) return [];
 
         let sortableRows = [...results.rows];
+
+        // Apply filter if filterText is provided
+        if (filterText && filterText.trim() !== '') {
+            const lowerFilter = filterText.toLowerCase();
+            sortableRows = sortableRows.filter(row => {
+                // Check if any column value contains the filter text
+                return results.columns.some(col => {
+                    const value = row[col];
+                    if (value === null || value === undefined) return false;
+                    return String(value).toLowerCase().includes(lowerFilter);
+                });
+            });
+        }
+
+        // Apply sorting
         if (sortConfig.key !== null) {
             sortableRows.sort((a, b) => {
                 const aValue = a[sortConfig.key];
@@ -37,7 +52,7 @@ const ResultsTable = forwardRef(({ results, loading }, ref) => {
             });
         }
         return sortableRows;
-    }, [results, sortConfig]);
+    }, [results, sortConfig, filterText]);
 
     const paginatedRows = useMemo(() => {
         const startIndex = (currentPage - 1) * rowsPerPage;
@@ -264,10 +279,10 @@ const ResultsTable = forwardRef(({ results, loading }, ref) => {
                                 <th
                                     key={col}
                                     scope="col"
-                                    className="px-6 py-3 text-left text-xs font-medium text-grid-header-text uppercase tracking-wider whitespace-nowrap border-b border-grid-border cursor-pointer hover:bg-grid-header-hover hover:text-grid-text transition-colors select-none group border-r border-grid-border last:border-r-0"
+                                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider whitespace-nowrap border-b border-grid-border cursor-pointer hover:bg-grid-header-hover transition-colors select-none group border-r border-grid-border last:border-r-0"
                                     onClick={() => requestSort(col)}
                                 >
-                                    <div className="flex items-center gap-1">
+                                    <div className="flex items-center gap-1 text-grid-header-text group-hover:text-grid-header-text-hover transition-colors">
                                         {col}
                                         <span className="text-ui-text-muted group-hover:text-grid-header-text">
                                             {sortConfig.key === col ? (
