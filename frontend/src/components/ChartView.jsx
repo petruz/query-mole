@@ -1,27 +1,33 @@
 import React, { useRef } from 'react';
-import { Line, Bar } from 'react-chartjs-2';
+import { Line, Bar, Pie, PolarArea } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
     CategoryScale,
     LinearScale,
+    RadialLinearScale,
     PointElement,
     LineElement,
     BarElement,
+    ArcElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    Filler
 } from 'chart.js';
 
 // Register Chart.js components
 ChartJS.register(
     CategoryScale,
     LinearScale,
+    RadialLinearScale,
     PointElement,
     LineElement,
     BarElement,
+    ArcElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    Filler
 );
 
 const CHART_COLORS = [
@@ -81,25 +87,44 @@ const ChartView = ({ results, chartConfig }) => {
         return value !== null && value !== undefined ? String(value) : '';
     });
 
-    const datasets = chartConfig.yColumns.map((colIndex, i) => {
-        const colName = results.columns[colIndex];
-        const colorIndex = i % CHART_COLORS.length;
-        const color = CHART_COLORS[colorIndex];
+    let datasets = [];
+    const isCircular = ['pie', 'polarArea'].includes(chartConfig.type);
 
-        return {
-            label: colName,
+    if (isCircular) {
+        const yColIndex = chartConfig.yColumns[0];
+        const yColName = results.columns[yColIndex];
+
+        datasets = [{
+            label: yColName,
             data: results.rows.map(row => {
-                const value = row[colName];
-                // Convert to number, handle null/undefined
+                const value = row[yColName];
                 return value !== null && value !== undefined ? Number(value) : null;
             }),
-            borderColor: color,
-            backgroundColor: chartConfig.type === 'bar' ? color : color + '33', // 20% opacity for line fill
-            borderWidth: 2,
-            tension: 0.1, // Smooth lines
-            fill: chartConfig.type === 'line',
-        };
-    });
+            backgroundColor: results.rows.map((_, i) => CHART_COLORS[i % CHART_COLORS.length]),
+            borderColor: '#ffffff', // White border for separation
+            borderWidth: 1,
+        }];
+    } else {
+        datasets = chartConfig.yColumns.map((colIndex, i) => {
+            const colName = results.columns[colIndex];
+            const colorIndex = i % CHART_COLORS.length;
+            const color = CHART_COLORS[colorIndex];
+
+            return {
+                label: colName,
+                data: results.rows.map(row => {
+                    const value = row[colName];
+                    // Convert to number, handle null/undefined
+                    return value !== null && value !== undefined ? Number(value) : null;
+                }),
+                borderColor: color,
+                backgroundColor: chartConfig.type === 'bar' ? color : (chartConfig.type === 'area' ? color + '33' : color), // Opacity for area fill
+                borderWidth: 2,
+                tension: 0.1, // Smooth lines
+                fill: chartConfig.type === 'area',
+            };
+        });
+    }
 
     const data = {
         labels,
@@ -110,6 +135,18 @@ const ChartView = ({ results, chartConfig }) => {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
+            title: {
+                display: !!chartConfig.title,
+                text: chartConfig.title,
+                color: 'rgb(209, 213, 219)', // text-gray-300
+                font: {
+                    size: 16,
+                    weight: 'bold'
+                },
+                padding: {
+                    bottom: 20
+                }
+            },
             legend: {
                 position: 'top',
                 labels: {
@@ -120,11 +157,23 @@ const ChartView = ({ results, chartConfig }) => {
                 }
             },
             tooltip: {
-                mode: 'index',
-                intersect: false,
+                mode: isCircular ? 'nearest' : 'index',
+                intersect: isCircular,
             }
         },
-        scales: {
+        scales: chartConfig.type === 'pie' ? {
+            // Pie charts don't typically use axes/scales
+        } : (chartConfig.type === 'polarArea' || isCircular) ? {
+            r: {
+                ticks: {
+                    backdropColor: 'transparent',
+                    color: 'rgb(156, 163, 175)'
+                },
+                grid: {
+                    color: 'rgba(75, 85, 99, 0.3)'
+                }
+            }
+        } : {
             x: {
                 ticks: {
                     color: 'rgb(156, 163, 175)', // text-gray-400
@@ -144,7 +193,7 @@ const ChartView = ({ results, chartConfig }) => {
                 }
             }
         },
-        interaction: {
+        interaction: isCircular ? {} : {
             mode: 'nearest',
             axis: 'x',
             intersect: false
@@ -154,10 +203,22 @@ const ChartView = ({ results, chartConfig }) => {
     return (
         <div className="w-full h-full p-4">
             <div className="w-full h-full">
-                {chartConfig.type === 'line' ? (
+                {(chartConfig.type === 'line' || chartConfig.type === 'area') ? (
                     <Line ref={chartRef} data={data} options={options} />
-                ) : (
+                ) : chartConfig.type === 'bar' ? (
                     <Bar ref={chartRef} data={data} options={options} />
+                ) : chartConfig.type === 'pie' ? (
+                    <div className="relative w-full h-full flex justify-center">
+                        <div className="w-full max-w-2xl">
+                            <Pie ref={chartRef} data={data} options={options} />
+                        </div>
+                    </div>
+                ) : (
+                    <div className="relative w-full h-full flex justify-center">
+                        <div className="w-full max-w-2xl">
+                            <PolarArea ref={chartRef} data={data} options={options} />
+                        </div>
+                    </div>
                 )}
             </div>
         </div>
